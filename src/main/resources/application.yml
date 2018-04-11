@@ -3,12 +3,13 @@ server:
 spring:
   application:
     name: micro-server
-  geekerDataSource:
+geeker:
+  dataSource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://192.168.0.154:3306/geeker?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
-    username: root
-    password: root
+    username: geeker
+    password: HKdw!@#2017
     filters: stat
     maxActive: 20
     initialSize: 1
@@ -22,7 +23,8 @@ spring:
     testOnReturn: false
     poolPreparedStatements: true
     maxOpenPreparedStatements: 20
-  microDataSource:
+micro:
+  dataSource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://192.168.0.160:3306/micro?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull

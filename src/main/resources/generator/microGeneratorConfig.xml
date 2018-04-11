@@ -14,7 +14,7 @@
         <!--数据库链接URL，用户名、密码 -->
         <jdbcConnection  driverClass="com.mysql.jdbc.Driver"
                          connectionURL="jdbc:mysql://192.168.0.160:3306/micro?createDatabaseIfNotExist=true"
-                         userId="micro" password="HKdw!@#2017">
+                         userId="micro" password="noT1YhB3HWH7!">
         </jdbcConnection>
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>

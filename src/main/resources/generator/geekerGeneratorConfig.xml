@@ -14,7 +14,7 @@
         <!--数据库链接URL，用户名、密码 -->
         <jdbcConnection  driverClass="com.mysql.jdbc.Driver"
                          connectionURL="jdbc:mysql://192.168.0.160:3306/geeker?createDatabaseIfNotExist=true"
-                         userId="geeker" password="noT1YhB3HWH7!">
+                         userId="geeker" password="HKdw!@#2017">
         </jdbcConnection>
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
@@ -29,7 +29,7 @@
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
         <!-- 生成DAO的包名和位置-->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.geeker.mapper" targetProject="src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.geeker.mapper.geeker" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
         <!-- 要生成的表 tableName是数据库中的表名或视图名 domainObjectName是实体类名-->
