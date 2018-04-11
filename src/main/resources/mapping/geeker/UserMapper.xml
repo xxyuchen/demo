@@ -51,8 +51,7 @@
       qq, last_login_time, weixin_id, 
       job, head_name, birthday, 
       upper_Id, pass_code, is_admin, 
-      is_agree_disclaimer, agree_disclaimer_time, pwd_update_time
-      )
+      is_agree_disclaimer, agree_disclaimer_time, pwd_update_time)
     values (#{id,jdbcType=INTEGER}, #{companyId,jdbcType=INTEGER}, #{loginName,jdbcType=VARCHAR}, 
       #{loginPwd,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, 
       #{mobile,jdbcType=VARCHAR}, #{isMobileValid,jdbcType=BIT}, #{email,jdbcType=VARCHAR}, 
