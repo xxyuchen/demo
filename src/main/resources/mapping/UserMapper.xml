@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geeker.mapper.geeker.UserMapper">
+  <resultMap id="BaseResultMap" type="com.geeker.model.User">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="company_id" jdbcType="INTEGER" property="companyId" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="sex" jdbcType="CHAR" property="sex" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="is_mobile_valid" jdbcType="BIT" property="isMobileValid" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="is_email_valid" jdbcType="BIT" property="isEmailValid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="STATUS" jdbcType="BIT" property="status" />
+    <result column="qq" jdbcType="VARCHAR" property="qq" />
+    <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <result column="weixin_id" jdbcType="VARCHAR" property="weixinId" />
+    <result column="job" jdbcType="VARCHAR" property="job" />
+    <result column="head_name" jdbcType="VARCHAR" property="headName" />
+    <result column="birthday" jdbcType="DATE" property="birthday" />
+    <result column="upper_Id" jdbcType="INTEGER" property="upperId" />
+    <result column="pass_code" jdbcType="INTEGER" property="passCode" />
+    <result column="is_admin" jdbcType="BIT" property="isAdmin" />
+    <result column="is_agree_disclaimer" jdbcType="BIT" property="isAgreeDisclaimer" />
+    <result column="agree_disclaimer_time" jdbcType="TIMESTAMP" property="agreeDisclaimerTime" />
+    <result column="pwd_update_time" jdbcType="TIMESTAMP" property="pwdUpdateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, company_id, login_name, login_pwd, user_name, sex, mobile, is_mobile_valid, email, 
+    is_email_valid, create_time, STATUS, qq, last_login_time, weixin_id, job, head_name, 
+    birthday, upper_Id, pass_code, is_admin, is_agree_disclaimer, agree_disclaimer_time, 
+    pwd_update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.geeker.model.User">
+    insert into user (id, company_id, login_name, 
+      login_pwd, user_name, sex, 
+      mobile, is_mobile_valid, email, 
+      is_email_valid, create_time, STATUS, 
+      qq, last_login_time, weixin_id, 
+      job, head_name, birthday, 
+      upper_Id, pass_code, is_admin, 
+      is_agree_disclaimer, agree_disclaimer_time, pwd_update_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{companyId,jdbcType=INTEGER}, #{loginName,jdbcType=VARCHAR}, 
+      #{loginPwd,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, 
+      #{mobile,jdbcType=VARCHAR}, #{isMobileValid,jdbcType=BIT}, #{email,jdbcType=VARCHAR}, 
+      #{isEmailValid,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=BIT}, 
+      #{qq,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{weixinId,jdbcType=VARCHAR}, 
+      #{job,jdbcType=VARCHAR}, #{headName,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
+      #{upperId,jdbcType=INTEGER}, #{passCode,jdbcType=INTEGER}, #{isAdmin,jdbcType=BIT}, 
+      #{isAgreeDisclaimer,jdbcType=BIT}, #{agreeDisclaimerTime,jdbcType=TIMESTAMP}, #{pwdUpdateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.geeker.model.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="loginName != null">
+        login_name,
+      </if>
+      <if test="loginPwd != null">
+        login_pwd,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="isMobileValid != null">
+        is_mobile_valid,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="isEmailValid != null">
+        is_email_valid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="qq != null">
+        qq,
+      </if>
+      <if test="lastLoginTime != null">
+        last_login_time,
+      </if>
+      <if test="weixinId != null">
+        weixin_id,
+      </if>
+      <if test="job != null">
+        job,
+      </if>
+      <if test="headName != null">
+        head_name,
+      </if>
+      <if test="birthday != null">
+        birthday,
+      </if>
+      <if test="upperId != null">
+        upper_Id,
+      </if>
+      <if test="passCode != null">
+        pass_code,
+      </if>
+      <if test="isAdmin != null">
+        is_admin,
+      </if>
+      <if test="isAgreeDisclaimer != null">
+        is_agree_disclaimer,
+      </if>
+      <if test="agreeDisclaimerTime != null">
+        agree_disclaimer_time,
+      </if>
+      <if test="pwdUpdateTime != null">
+        pwd_update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="loginName != null">
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPwd != null">
+        #{loginPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=CHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="isMobileValid != null">
+        #{isMobileValid,jdbcType=BIT},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="isEmailValid != null">
+        #{isEmailValid,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="qq != null">
+        #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null">
+        #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="weixinId != null">
+        #{weixinId,jdbcType=VARCHAR},
+      </if>
+      <if test="job != null">
+        #{job,jdbcType=VARCHAR},
+      </if>
+      <if test="headName != null">
+        #{headName,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=DATE},
+      </if>
+      <if test="upperId != null">
+        #{upperId,jdbcType=INTEGER},
+      </if>
+      <if test="passCode != null">
+        #{passCode,jdbcType=INTEGER},
+      </if>
+      <if test="isAdmin != null">
+        #{isAdmin,jdbcType=BIT},
+      </if>
+      <if test="isAgreeDisclaimer != null">
+        #{isAgreeDisclaimer,jdbcType=BIT},
+      </if>
+      <if test="agreeDisclaimerTime != null">
+        #{agreeDisclaimerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pwdUpdateTime != null">
+        #{pwdUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.geeker.model.User">
+    update user
+    <set>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="loginName != null">
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPwd != null">
+        login_pwd = #{loginPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=CHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="isMobileValid != null">
+        is_mobile_valid = #{isMobileValid,jdbcType=BIT},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="isEmailValid != null">
+        is_email_valid = #{isEmailValid,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=BIT},
+      </if>
+      <if test="qq != null">
+        qq = #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null">
+        last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="weixinId != null">
+        weixin_id = #{weixinId,jdbcType=VARCHAR},
+      </if>
+      <if test="job != null">
+        job = #{job,jdbcType=VARCHAR},
+      </if>
+      <if test="headName != null">
+        head_name = #{headName,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday,jdbcType=DATE},
+      </if>
+      <if test="upperId != null">
+        upper_Id = #{upperId,jdbcType=INTEGER},
+      </if>
+      <if test="passCode != null">
+        pass_code = #{passCode,jdbcType=INTEGER},
+      </if>
+      <if test="isAdmin != null">
+        is_admin = #{isAdmin,jdbcType=BIT},
+      </if>
+      <if test="isAgreeDisclaimer != null">
+        is_agree_disclaimer = #{isAgreeDisclaimer,jdbcType=BIT},
+      </if>
+      <if test="agreeDisclaimerTime != null">
+        agree_disclaimer_time = #{agreeDisclaimerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pwdUpdateTime != null">
+        pwd_update_time = #{pwdUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.geeker.model.User">
+    update user
+    set company_id = #{companyId,jdbcType=INTEGER},
+      login_name = #{loginName,jdbcType=VARCHAR},
+      login_pwd = #{loginPwd,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=CHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      is_mobile_valid = #{isMobileValid,jdbcType=BIT},
+      email = #{email,jdbcType=VARCHAR},
+      is_email_valid = #{isEmailValid,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      STATUS = #{status,jdbcType=BIT},
+      qq = #{qq,jdbcType=VARCHAR},
+      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      weixin_id = #{weixinId,jdbcType=VARCHAR},
+      job = #{job,jdbcType=VARCHAR},
+      head_name = #{headName,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=DATE},
+      upper_Id = #{upperId,jdbcType=INTEGER},
+      pass_code = #{passCode,jdbcType=INTEGER},
+      is_admin = #{isAdmin,jdbcType=BIT},
+      is_agree_disclaimer = #{isAgreeDisclaimer,jdbcType=BIT},
+      agree_disclaimer_time = #{agreeDisclaimerTime,jdbcType=TIMESTAMP},
+      pwd_update_time = #{pwdUpdateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
