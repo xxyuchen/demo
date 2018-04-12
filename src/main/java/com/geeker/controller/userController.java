@@ -3,6 +3,7 @@ package com.geeker.controller;
 import com.geeker.response.Response;
 import com.geeker.response.ResponseUtils;
 import com.geeker.service.UserService;
+import com.geeker.utils.LoginUserUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,8 +17,16 @@ import javax.annotation.Resource;
 public class userController {
     @Resource
     private UserService userService;
-    @RequestMapping("getById")
-    public Response demo(Integer id){
+    @RequestMapping("/getById")
+    public Response getById(Integer id){
         return ResponseUtils.success(userService.getById(id));
+    }
+    @RequestMapping("/demo")
+    public String demo(Integer id){
+        return userService.getById(id).toString();
+    }
+    @RequestMapping("/getLoginUser")
+    public Response getLoginUser(){
+        return ResponseUtils.success(LoginUserUtil.getUser());
     }
 }

@@ -3,6 +3,15 @@ server:
 spring:
   application:
     name: device
+  jwt:
+    header: Authorization
+    secret: FTVZW4TVMa9kjxNKutN0BIn1LvvBLyZQMCc7RJXZBPo
+    expiration: 3600
+    auto_refresh_in: 600
+    tokenHead: Bearer
+    cookieName: token
+    writeCookie: true
+    writeHeader: true
 geeker:
   datasource:
     jdbcUrl: jdbc:mysql://192.168.0.160:3306/geeker?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull

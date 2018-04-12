@@ -7,8 +7,6 @@ package com.geeker.response;
  */
 public interface Response {
 
-    boolean isSuccess();
-
     Integer getCode();
 
     String getMessage();

@@ -15,7 +15,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class CamelPageResponse<T> extends CamelResponse implements PageResponse {
 
-    protected Boolean success = true;
     protected String message = "操作成功！";
     protected Integer code = 200;
     protected PageData data;

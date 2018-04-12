@@ -18,11 +18,6 @@ import java.util.Map;
 public class CamelResponse implements Response {
 
     /**
-     * 是否成功
-     */
-    protected boolean success;
-
-    /**
      * 响应码，当success为false时，code值代表服务端错误状态
      */
     protected Integer code;
@@ -50,7 +45,7 @@ public class CamelResponse implements Response {
      * @param data 要响应的数据
      */
     CamelResponse(Object data) {
-        this(true, 200, "操作成功！", data);
+        this(200, "操作成功！", data);
     }
 
     /**
@@ -59,7 +54,7 @@ public class CamelResponse implements Response {
      * @param success 是否成功
      */
     CamelResponse(boolean success) {
-        this(success, success ? 0 : -1, null, null);
+        this(success ? 0 : -1, null, null);
     }
 
     /**
@@ -69,19 +64,17 @@ public class CamelResponse implements Response {
      * @param message 错误信息
      */
     CamelResponse(Integer code, String message) {
-        this(false, code, message, null);
+        this(code, message, null);
     }
 
     /**
      * 初始化构造方法
      *
-     * @param success 是否成功
      * @param code    状态码
      * @param message 响应消息
      * @param data    响应的数据对象
      */
-    CamelResponse(boolean success, Integer code, String message, Object data) {
-        this.success = success;
+    CamelResponse(Integer code, String message, Object data) {
         this.code = code;
         this.message = message;
         this.data = data;

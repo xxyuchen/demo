@@ -8,4 +8,6 @@ import com.geeker.model.User;
 public interface UserService {
 
     User getById(Integer id);
+
+    User getByLoginName(String loginName);
 }

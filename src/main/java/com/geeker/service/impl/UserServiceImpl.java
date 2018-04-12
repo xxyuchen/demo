@@ -19,4 +19,14 @@ public class UserServiceImpl implements UserService {
     public User getById(Integer id) {
         return userMapper.selectByPrimaryKey(id);
     }
+
+    /**
+     * 根据登录名查询用户
+     * @param loginName
+     * @return
+     */
+    @Override
+    public User getByLoginName(String loginName) {
+        return userMapper.selectByLoginName(loginName);
+    }
 }

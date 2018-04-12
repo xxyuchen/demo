@@ -15,8 +15,10 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import javax.sql.DataSource;
 
 /**
- * Created by Administrator on 2018/4/11 0011.
- */
+* @Author TangZhen
+* @Date 2018/4/12 0012 15:03
+* @Description  micro库数据源配置
+*/
 @Configuration
 @MapperScan(basePackages = {"com.geeker.mapper.micro"}, sqlSessionFactoryRef = "microSqlSessionFactory")
 public class MicroDbAConfig {
