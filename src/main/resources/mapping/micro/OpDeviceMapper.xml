@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geeker.mapper.micro.OpDeviceMapper">
+  <resultMap id="BaseResultMap" type="com.geeker.model.OpDevice">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="imsi" jdbcType="VARCHAR" property="imsi" />
+    <result column="imei" jdbcType="VARCHAR" property="imei" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="cpu" jdbcType="VARCHAR" property="cpu" />
+    <result column="ram" jdbcType="VARCHAR" property="ram" />
+    <result column="mem" jdbcType="VARCHAR" property="mem" />
+    <result column="network_mode" jdbcType="VARCHAR" property="networkMode" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="sys_id" jdbcType="INTEGER" property="sysId" />
+    <result column="com_id" jdbcType="INTEGER" property="comId" />
+    <result column="group_id" jdbcType="INTEGER" property="groupId" />
+    <result column="bound_time" jdbcType="TIMESTAMP" property="boundTime" />
+    <result column="bound_user_id" jdbcType="INTEGER" property="boundUserId" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mobile, imsi, imei, model, cpu, ram, mem, network_mode, remark, sys_id, com_id, 
+    group_id, bound_time, bound_user_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from op_device
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from op_device
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.geeker.model.OpDevice">
+    insert into op_device (id, mobile, imsi, 
+      imei, model, cpu, ram, 
+      mem, network_mode, remark, 
+      sys_id, com_id, group_id, 
+      bound_time, bound_user_id, status
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR}, 
+      #{imei,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{cpu,jdbcType=VARCHAR}, #{ram,jdbcType=VARCHAR}, 
+      #{mem,jdbcType=VARCHAR}, #{networkMode,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{sysId,jdbcType=INTEGER}, #{comId,jdbcType=INTEGER}, #{groupId,jdbcType=INTEGER}, 
+      #{boundTime,jdbcType=TIMESTAMP}, #{boundUserId,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.geeker.model.OpDevice">
+    insert into op_device
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="imsi != null">
+        imsi,
+      </if>
+      <if test="imei != null">
+        imei,
+      </if>
+      <if test="model != null">
+        model,
+      </if>
+      <if test="cpu != null">
+        cpu,
+      </if>
+      <if test="ram != null">
+        ram,
+      </if>
+      <if test="mem != null">
+        mem,
+      </if>
+      <if test="networkMode != null">
+        network_mode,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="sysId != null">
+        sys_id,
+      </if>
+      <if test="comId != null">
+        com_id,
+      </if>
+      <if test="groupId != null">
+        group_id,
+      </if>
+      <if test="boundTime != null">
+        bound_time,
+      </if>
+      <if test="boundUserId != null">
+        bound_user_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="imsi != null">
+        #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="imei != null">
+        #{imei,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="cpu != null">
+        #{cpu,jdbcType=VARCHAR},
+      </if>
+      <if test="ram != null">
+        #{ram,jdbcType=VARCHAR},
+      </if>
+      <if test="mem != null">
+        #{mem,jdbcType=VARCHAR},
+      </if>
+      <if test="networkMode != null">
+        #{networkMode,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="sysId != null">
+        #{sysId,jdbcType=INTEGER},
+      </if>
+      <if test="comId != null">
+        #{comId,jdbcType=INTEGER},
+      </if>
+      <if test="groupId != null">
+        #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="boundTime != null">
+        #{boundTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="boundUserId != null">
+        #{boundUserId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.geeker.model.OpDevice">
+    update op_device
+    <set>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="imsi != null">
+        imsi = #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="imei != null">
+        imei = #{imei,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="cpu != null">
+        cpu = #{cpu,jdbcType=VARCHAR},
+      </if>
+      <if test="ram != null">
+        ram = #{ram,jdbcType=VARCHAR},
+      </if>
+      <if test="mem != null">
+        mem = #{mem,jdbcType=VARCHAR},
+      </if>
+      <if test="networkMode != null">
+        network_mode = #{networkMode,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="sysId != null">
+        sys_id = #{sysId,jdbcType=INTEGER},
+      </if>
+      <if test="comId != null">
+        com_id = #{comId,jdbcType=INTEGER},
+      </if>
+      <if test="groupId != null">
+        group_id = #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="boundTime != null">
+        bound_time = #{boundTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="boundUserId != null">
+        bound_user_id = #{boundUserId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.geeker.model.OpDevice">
+    update op_device
+    set mobile = #{mobile,jdbcType=VARCHAR},
+      imsi = #{imsi,jdbcType=VARCHAR},
+      imei = #{imei,jdbcType=VARCHAR},
+      model = #{model,jdbcType=VARCHAR},
+      cpu = #{cpu,jdbcType=VARCHAR},
+      ram = #{ram,jdbcType=VARCHAR},
+      mem = #{mem,jdbcType=VARCHAR},
+      network_mode = #{networkMode,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      sys_id = #{sysId,jdbcType=INTEGER},
+      com_id = #{comId,jdbcType=INTEGER},
+      group_id = #{groupId,jdbcType=INTEGER},
+      bound_time = #{boundTime,jdbcType=TIMESTAMP},
+      bound_user_id = #{boundUserId,jdbcType=INTEGER},
+      status = #{status,jdbcType=TINYINT}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="getList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from op_device
+    <where>
+      <if test="comId != null">
+        and com_id = #{comId}
+      </if>
+      <if test="comId != null">
+        and sys_id = #{sysId}
+      </if>
+      <if test="comId != null">
+        and group_id = #{groupId}
+      </if>
+    </where>
+    order by id desc
+  </select>
+  <update id="removeBound" parameterType="com.geeker.model.OpDevice">
+    update op_device
+    set
+    bound_time = #{boundTime,jdbcType=TIMESTAMP},
+    bound_user_id = #{boundUserId,jdbcType=INTEGER},
+    status = #{status,jdbcType=TINYINT}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByBoundUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from op_device
+    where bound_user_id = #{id,jdbcType=VARCHAR}
+  </select>
+</mapper>

@@ -1,6 +1,7 @@
 package com.geeker.utils;
 
 import com.geeker.model.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -23,6 +24,9 @@ public class LoginUserUtil {
     public static User getUser() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String token = CookieUtil.getCookies(request).get("token");
+        if(StringUtils.isEmpty(token)){
+            token = CookieUtil.getCookies(request).get("market");
+        }
         return (User) request.getSession().getAttribute(token);
     }
 

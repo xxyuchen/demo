@@ -13,7 +13,7 @@
         </commentGenerator>
         <!--数据库链接URL，用户名、密码 -->
         <jdbcConnection  driverClass="com.mysql.jdbc.Driver"
-                         connectionURL="jdbc:mysql://192.168.0.160:3306/micro?createDatabaseIfNotExist=true"
+                         connectionURL="jdbc:mysql://192.168.0.154:3306/micro?createDatabaseIfNotExist=true"
                          userId="micro" password="noT1YhB3HWH7!">
         </jdbcConnection>
         <javaTypeResolver>
@@ -25,14 +25,16 @@
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
         <!-- 生成映射文件的包名和位置-->
-        <sqlMapGenerator targetPackage="mapping.micro" targetProject="src/main/java">
+        <sqlMapGenerator targetPackage="mapping.micro" targetProject="src/main/resources">
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
         <!-- 生成DAO的包名和位置-->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.geeker.mapper" targetProject="src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.geeker.mapper.micro" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
         <!-- 要生成的表 tableName是数据库中的表名或视图名 domainObjectName是实体类名-->
-        <table tableName="op_device" domainObjectName="User" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="op_device" domainObjectName="OpDevice" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+            <columnOverride column="status" javaType="Integer" jdbcType="TINYINT"></columnOverride>
+        </table>
     </context>
 </generatorConfiguration>

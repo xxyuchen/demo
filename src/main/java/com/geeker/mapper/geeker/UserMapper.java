@@ -1,6 +1,9 @@
 package com.geeker.mapper.geeker;
 
 import com.geeker.model.User;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Map;
 
 public interface UserMapper {
     int deleteByPrimaryKey(Integer id);
@@ -16,4 +19,8 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     User selectByLoginName(String loginName);
+
+    Map<String,String> selectByUserId(@Param("id") Integer id, @Param("comId") Integer comId);
+
+    User selectByWhere(User user);
 }

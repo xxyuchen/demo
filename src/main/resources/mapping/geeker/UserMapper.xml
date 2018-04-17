@@ -322,4 +322,46 @@
     where login_name = #{loginName,jdbcType=VARCHAR}
     and status = 1
   </select>
+
+  <select id="selectByUserId" resultType="Map">
+    SELECT u.user_name AS userName,a.departId,a.departName FROM USER u
+    LEFT JOIN (
+    SELECT DISTINCT
+    cd.`id`,
+    cd.`depart_name`
+    FROM
+    conf_depart cd,
+    sys_relation sr
+    <where>
+      cd.id = sr.target_id
+      AND sr.rel_type = 'user_depart'
+      <if test="comId !=null">and cd.com_id = #{comId}</if>
+      <if test="id !=null"> and sr.from_id = #{id}</if>
+      and cd.`is_admin` = 0
+      and cd.status = 1
+    </where>) a
+    ON u.`id` = a.userId
+    WHERE u.`id` = #{id}
+  </select>
+
+  <select id="selectByWhere" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    <where>
+      <if test="companyId != null">
+        and company_id = #{companyId,jdbcType=INTEGER}
+      </if>
+      <if test="id != null">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="upperId != null">
+        and upper_Id = #{upperId,jdbcType=INTEGER}
+      </if>
+      <if test="isAdmin != null">
+        and is_admin = #{isAdmin,jdbcType=INTEGER}
+      </if>
+    </where>
+    and STATUS = 1
+  </select>
 </mapper>

@@ -53,4 +53,6 @@ public class User {
 
     private Date pwdUpdateTime;
 
+    private String deviceId;
+
 }

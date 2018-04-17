@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geeker.mapper.geeker.CustGroupMapper">
+  <resultMap id="BaseResultMap" type="com.geeker.model.CustGroup">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+    <result column="group_type" jdbcType="INTEGER" property="groupType" />
+    <result column="cust_num" jdbcType="INTEGER" property="custNum" />
+    <result column="filter_expr" jdbcType="VARCHAR" property="filterExpr" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="reload_time" jdbcType="TIMESTAMP" property="reloadTime" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="com_id" jdbcType="INTEGER" property="comId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, group_name, group_type, cust_num, filter_expr, create_time, reload_time, create_user_id, 
+    com_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from cust_group
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from cust_group
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.geeker.model.CustGroup">
+    insert into cust_group (id, group_name, group_type, 
+      cust_num, filter_expr, create_time, 
+      reload_time, create_user_id, com_id, 
+      status)
+    values (#{id,jdbcType=INTEGER}, #{groupName,jdbcType=VARCHAR}, #{groupType,jdbcType=INTEGER}, 
+      #{custNum,jdbcType=INTEGER}, #{filterExpr,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{reloadTime,jdbcType=TIMESTAMP}, #{createUserId,jdbcType=INTEGER}, #{comId,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.geeker.model.CustGroup">
+    insert into cust_group
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="groupName != null">
+        group_name,
+      </if>
+      <if test="groupType != null">
+        group_type,
+      </if>
+      <if test="custNum != null">
+        cust_num,
+      </if>
+      <if test="filterExpr != null">
+        filter_expr,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="reloadTime != null">
+        reload_time,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="comId != null">
+        com_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="groupName != null">
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupType != null">
+        #{groupType,jdbcType=INTEGER},
+      </if>
+      <if test="custNum != null">
+        #{custNum,jdbcType=INTEGER},
+      </if>
+      <if test="filterExpr != null">
+        #{filterExpr,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reloadTime != null">
+        #{reloadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="comId != null">
+        #{comId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.geeker.model.CustGroup">
+    update cust_group
+    <set>
+      <if test="groupName != null">
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupType != null">
+        group_type = #{groupType,jdbcType=INTEGER},
+      </if>
+      <if test="custNum != null">
+        cust_num = #{custNum,jdbcType=INTEGER},
+      </if>
+      <if test="filterExpr != null">
+        filter_expr = #{filterExpr,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reloadTime != null">
+        reload_time = #{reloadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="comId != null">
+        com_id = #{comId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.geeker.model.CustGroup">
+    update cust_group
+    set group_name = #{groupName,jdbcType=VARCHAR},
+      group_type = #{groupType,jdbcType=INTEGER},
+      cust_num = #{custNum,jdbcType=INTEGER},
+      filter_expr = #{filterExpr,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      reload_time = #{reloadTime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      com_id = #{comId,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectForMarket" resultType="Map">
+    select id,group_name as name,status
+    from cust_group
+    where create_user_id = #{id}
+    and group_type = 1
+    <if test="synTime != null">
+      and DATETIME(reload_time) > DATETIME(#{synTime})
+    </if>
+    order by reload_time DESC
+  </select>
+
+  <select id="selectCustForMarket" resultType="String">
+    select CONCAT('10100',LPAD(c.`id`,11,0)) AS name
+    from cust_group_rel r left join cust c on r.cust_id = c.id
+    where r.cust_group_id = #{id}
+  </select>
+</mapper>

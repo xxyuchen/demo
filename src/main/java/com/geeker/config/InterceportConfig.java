@@ -1,6 +1,7 @@
 package com.geeker.config;
 
 import com.geeker.interceptor.LoginVerifyIntercepor;
+import com.geeker.service.OpDeviceService;
 import com.geeker.service.UserService;
 import com.geeker.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +26,12 @@ public class InterceportConfig extends WebMvcConfigurerAdapter {
     @Resource
     private UserService userService;
 
+    @Resource
+    private OpDeviceService opDeviceService;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginVerifyIntercepor(jwtTokenUtil,tokenConfig.getSecret(),userService));
+        registry.addInterceptor(new LoginVerifyIntercepor(jwtTokenUtil,tokenConfig.getSecret(),userService,opDeviceService));
         log.info("===========   拦截器注册完毕   ===========");
     }
 }

@@ -1,0 +1,372 @@
+package com.geeker.service.impl;
+
+import com.alibaba.fastjson.JSONObject;
+import com.geeker.config.RestUrlConfig;
+import com.geeker.enums.DeviceEnum;
+import com.geeker.mapper.geeker.CustGroupMapper;
+import com.geeker.mapper.geeker.CustMapper;
+import com.geeker.mapper.geeker.UserMapper;
+import com.geeker.mapper.micro.OpDeviceMapper;
+import com.geeker.model.OpDevice;
+import com.geeker.model.User;
+import com.geeker.response.CamelResponse;
+import com.geeker.response.Response;
+import com.geeker.response.ResponseUtils;
+import com.geeker.service.OpDeviceService;
+import com.geeker.utils.LoginUserUtil;
+import com.geeker.utils.SecureNumberUtil;
+import com.geeker.vo.OpDeviceVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import javax.annotation.Resource;
+import java.util.*;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
+/**
+ * @Author TangZhen
+ * @Date 2018/4/13 0013 11:24
+ * @Description 注册手机
+ */
+@Service
+@Slf4j
+public class OpDeviceServiceImpl implements OpDeviceService {
+    @Resource
+    private OpDeviceMapper opDeviceMapper;
+
+    @Resource
+    private UserMapper userMapper;
+
+    @Resource
+    private CustMapper custMapper;
+
+    @Resource
+    private RestUrlConfig restUrlConfig;
+
+    @Resource
+    private CustGroupMapper custGroupMapper;
+
+    private RestTemplate restTemplate = new RestTemplate();
+
+    private ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(20, r -> {
+        Thread t = new Thread(r);
+        t.setDaemon(true);
+        t.setName("phoneBook-pool");
+        return t;
+    });
+
+    /**
+     * 手机设备列表
+     *
+     * @param vo
+     * @return
+     */
+    @Override
+    public Response getList(OpDeviceVo vo) {
+        PageHelper.startPage(vo.getPageIndex(), vo.getPageSize());
+        List<OpDevice> list = opDeviceMapper.getList(vo);
+        List<OpDeviceVo> voList = new ArrayList<>(20);
+        User user = LoginUserUtil.getUser();
+        for (OpDevice opDevice : list) {
+            OpDeviceVo opDeviceVo = new OpDeviceVo();
+            BeanUtils.copyProperties(opDevice, opDeviceVo);
+            if (null != opDevice.getBoundUserId()) {
+                //关联出用户及部门
+                Map<String, String> map = userMapper.selectByUserId(user.getId(), user.getCompanyId());
+                opDeviceVo.setUserName(map.get("userName"));
+                opDeviceVo.setDepartName(map.get("departName"));
+            }
+            voList.add(opDeviceVo);
+        }
+        PageInfo pageInfo = new PageInfo(list);
+        pageInfo.setList(voList);
+        return ResponseUtils.success(pageInfo);
+    }
+
+    /**
+     * 绑定微手机
+     *
+     * @param vo
+     * @return
+     */
+    @Override
+    public Response boundDevice(OpDeviceVo vo) throws Exception {
+        if (StringUtils.isEmpty(vo.getId())) {
+            throw new Exception("设备id不能为空！");
+        }
+        if (vo.getBoundUserId() == null) {
+            throw new Exception("绑定人id不能为空！");
+        }
+        //先判断该设备是否已绑定用户
+        OpDevice opDevice = opDeviceMapper.selectByPrimaryKey(vo.getId());
+        if (null == opDevice) {
+            throw new Exception("该设备不存在！");
+        }
+        User user = new User();
+        user.setId(vo.getBoundUserId());
+        user.setCompanyId(LoginUserUtil.getUser().getCompanyId());
+        User dto = userMapper.selectByWhere(user);
+        if (null == dto) {
+            throw new Exception("绑定人不存在！");
+        }
+        Map<String, Object> map = new HashMap<>(5);
+        map.put("deviceId", vo.getId());
+        map.put("comId", user.getCompanyId());
+        map.put("userId", user.getId());
+        if (null != opDevice.getBoundUserId()) {
+            //先解绑再绑定
+            Response response = restTemplate.getForObject(restUrlConfig.getRemoveBound(), Response.class, JSONObject.toJSONString(map));
+            if (response.getCode() != 200) {
+                return response;
+            }
+        }
+        map.put("boundUserId", vo.getBoundUserId());
+        Response response = restTemplate.getForObject(restUrlConfig.getBound(), Response.class, JSONObject.toJSONString(map));
+        if (response.getCode() != 200) {
+            return response;
+        }
+        OpDevice device = new OpDevice();
+        device.setId(vo.getId());
+        device.setBoundUserId(dto.getId());
+        device.setBoundTime(new Date());
+        device.setStatus(DeviceEnum.deviceStatusEnum.UNBOUND.getCode());
+        opDeviceMapper.updateByPrimaryKeySelective(device);
+        return ResponseUtils.success();
+    }
+
+    /**
+     * 解除绑定
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Response removeBound(String id) throws Exception {
+        if (StringUtils.isEmpty(id)) {
+            throw new Exception("设备id不能为空！");
+        }
+        User user = LoginUserUtil.getUser();
+        Map<String, Object> map = new HashMap<>(3);
+        map.put("deviceId", id);
+        map.put("comId", user.getCompanyId());
+        map.put("userId", user.getId());
+        Response response = restTemplate.getForObject(restUrlConfig.getRemoveBound(), Response.class, JSONObject.toJSONString(map));
+        if (response.getCode() == 200) {
+            OpDevice opDevice = new OpDevice();
+            opDevice.setId(id);
+            opDevice.setBoundTime(new Date());
+            opDevice.setStatus(DeviceEnum.deviceStatusEnum.UNBOUND.getCode());
+            opDeviceMapper.removeBound(opDevice);
+            return ResponseUtils.success();
+
+        } else {
+            return response;
+        }
+    }
+
+    /**
+     * 打电话
+     *
+     * @param custId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Response call(Integer custId) throws Exception {
+        User user = LoginUserUtil.getUser();
+        if(null==custId){
+            throw new Exception("客户id不能为空！");
+        }
+        String mobile = custMapper.selectById(user.getId(), custId);
+        if(StringUtils.isEmpty(mobile)){
+            throw new Exception("该客户无电话号码！");
+        }
+        Map<String, Object> map = new HashMap<>(4);
+        map.put("deviceId", user.getDeviceId());
+        map.put("comId", user.getCompanyId());
+        map.put("userId", user.getId());
+        map.put("mobile", SecureNumberUtil.createSecureNumber(custId));
+        return restTemplate.postForObject(restUrlConfig.getCall(), map, CamelResponse.class);
+    }
+
+    /**
+     * 同步通讯录
+     *
+     * @param synTime
+     * @param id
+     * @param deviceId
+     * @param companyId @return
+     */
+    @Override
+    public void phoneBook(Date synTime, Integer id, String deviceId, Integer companyId) {
+        executorService.execute(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    int pageNum = 1;
+                    boolean isHasNext = true;
+                    while (isHasNext) {
+                        PageHelper.startPage(pageNum, 20);
+                        List<Map> list = custMapper.selectForPhoneBook(id, synTime);
+                        if (list == null || list.size() <= 0) {
+                            log.info("无新数据，本次同步结束！");
+                            return;
+                        }
+                        List<String> mobiles = new ArrayList<>();
+                        for (Map map : list) {
+                            if (map.get("mobileStatus").equals(10)) {
+                                mobiles.add(map.get("mobile").toString());
+                            }
+                        }
+                        Map<String, String> encrypMap = new HashMap<>(20);
+                        try {
+                            encrypMap = restTemplate.postForObject(restUrlConfig.getMobileDecodeUrl(), mobiles, Map.class);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            log.error("号码解析服务异常{}", e);
+                        }
+                        List<Map<String, String>> data = new ArrayList<>(20);
+                        List<String> delMobiles = new ArrayList<>();
+                        for (Map map : list) {
+                            if (!map.get("status").equals(1)) {
+                                delMobiles.add(map.get("name").toString());
+                            } else {
+                                Map<String, String> stringMap = new HashMap<>(5);
+                                if (encrypMap.containsKey(map.get("mobile"))) {
+                                    stringMap.put("phone", encrypMap.get(map.get("mobile")));
+                                } else {
+                                    stringMap.put("phone", map.get("mobile").toString());
+                                }
+                                stringMap.put("secureNumber", map.get("name").toString());
+                                stringMap.put("nickname", map.get("nickName").toString());
+                                data.add(stringMap);
+                            }
+                        }
+                        Map<String, Object> map = new HashMap<>(5);
+                        map.put("mobiles", data);
+                        map.put("delMobiles", delMobiles);
+                        map.put("deviceId", deviceId);
+                        map.put("comId", companyId);
+                        CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getPhoneBook(), map, CamelResponse.class);
+                        if (camelResponse.getCode() != 200) {
+                            log.error("同步通讯录失败==>批次：{}result：{}", pageNum, camelResponse.getMessage());
+                        }
+                        PageInfo pageInfo = new PageInfo(list);
+                        isHasNext = pageInfo.isHasNextPage();
+                        pageNum++;
+                    }
+                } catch (Exception e) {
+                    log.error("同步手机通讯录异常",e);
+                }
+            }
+
+        });
+    }
+
+    /**
+     * 同步群组
+     *
+     * @param synTime
+     * @param id
+     * @param deviceId
+     * @param companyId
+     */
+    @Override
+    public void group(Date synTime, Integer id, String deviceId, Integer companyId) {
+        executorService.execute(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    int pageNum = 1;
+                    boolean isHasNext = true;
+                    while (isHasNext) {
+                        PageHelper.startPage(pageNum, 20);
+                        List<Map> list = custGroupMapper.selectForMarket(id, synTime);
+                        if (null == list || list.size() <= 0) {
+                            log.info("无新数据，本次同步结束！");
+                            return;
+                        }
+                        List<Integer> delGroups = new ArrayList<>();
+                        List<Map<String, Object>> data = new ArrayList<>();
+                        for (Map map : list) {
+                            if (!map.get("status").equals(1)) {
+                                delGroups.add((Integer) map.get("id"));
+                            } else {
+                                Map<String, Object> groupMap = new HashMap<>(3);
+                                groupMap.put("id", map.get("id"));
+                                groupMap.put("name", map.get("name"));
+                                List<String> custs = custGroupMapper.selectCustForMarket((Integer) map.get("id"));
+                                Set<String> set = new HashSet<>();
+                                for(String name : custs){
+                                    if(StringUtils.isNotEmpty(name)){
+                                        set.add(name);
+                                    }
+                                }
+                                groupMap.put("custs", set);
+                                data.add(groupMap);
+                            }
+                        }
+                        Map<String, Object> map = new HashMap<>(5);
+                        map.put("groups", data);
+                        map.put("delGroups", delGroups);
+                        map.put("deviceId", deviceId);
+                        map.put("comId", companyId);
+                        CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getGroup(), map, CamelResponse.class);
+                        if (camelResponse.getCode() != 200) {
+                            log.error("同步群组失败==>批次：{}result：{}", pageNum, camelResponse.getMessage());
+                        }
+                        PageInfo pageInfo = new PageInfo(list);
+                        isHasNext = pageInfo.isHasNextPage();
+                        pageNum++;
+                    }
+                } catch (Exception e) {
+                    log.error("同步群组异常", e);
+                }
+            }
+        });
+    }
+
+    /**
+     * 发送短信
+     * @param custId
+     * @return
+     */
+    @Override
+    public Response sendSms(Integer custId,String parm) throws Exception {
+        User user = LoginUserUtil.getUser();
+        if(null==custId){
+            throw new Exception("客户id不能为空！");
+        }
+        if(StringUtils.isEmpty(parm)){
+            throw new Exception("短信内容不能为空！");
+        }
+        String mobile = custMapper.selectById(user.getId(), custId);
+        if(StringUtils.isEmpty(mobile)){
+            throw new Exception("该客户无电话号码！");
+        }
+        Map<String, Object> map = new HashMap<>(5);
+        map.put("deviceId", user.getDeviceId());
+        map.put("comId", user.getCompanyId());
+        map.put("userId", user.getId());
+        map.put("secureNumber", SecureNumberUtil.createSecureNumber(custId));
+        map.put("parm", parm);
+        return restTemplate.postForObject(restUrlConfig.getSendSms(), map, CamelResponse.class);
+    }
+
+    @Override
+    public OpDevice selectByBoundUserId(Integer userId) {
+        return opDeviceMapper.selectByBoundUserId(userId);
+    }
+
+    @Override
+    public OpDevice selectByPrimaryKey(String id) {
+        return opDeviceMapper.selectByPrimaryKey(id);
+    }
+}
+

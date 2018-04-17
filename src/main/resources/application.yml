@@ -21,7 +21,22 @@ geeker:
 micro:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    jdbcUrl: jdbc:mysql://192.168.0.160:3306/micro?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull
+    jdbcUrl: jdbc:mysql://192.168.0.154:3306/micro?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull
     username: micro
     password: noT1YhB3HWH7!
+#配置分页插件pagehelper
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+market:
+  url:
+    bound: http://192.168.5.3:10011/cmd/sys/boundDevice
+    removeBound: http://192.168.5.3:10011/cmd/sys/removeBound
+    call: http://192.168.5.3:10011/cmd/phoneBook/call
+    mobileDecodeUrl: http://192.168.0.155:8092/parser/phone/decode
+    phoneBook: http://192.168.5.3:10011/cmd/phoneBook/phoneBook
+    group: http://192.168.5.3:10011/cmd/phoneBook/group
+    sendSms: http://192.168.5.3:10011/cmd/phoneBook/smsSendMsg
 

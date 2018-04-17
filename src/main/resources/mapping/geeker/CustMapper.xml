@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geeker.mapper.geeker.CustMapper">
+  <resultMap id="BaseResultMap" type="com.geeker.model.Cust">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="com_id" jdbcType="INTEGER" property="comId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="CHAR" property="sex" />
+    <result column="birthday" jdbcType="DATE" property="birthday" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="age_group" jdbcType="VARCHAR" property="ageGroup" />
+    <result column="marital" jdbcType="VARCHAR" property="marital" />
+    <result column="job" jdbcType="VARCHAR" property="job" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="weixin_id" jdbcType="VARCHAR" property="weixinId" />
+    <result column="weixin_nice_name" jdbcType="VARCHAR" property="weixinNiceName" />
+    <result column="wx_head_img_uri" jdbcType="VARCHAR" property="wxHeadImgUri" />
+    <result column="qq" jdbcType="VARCHAR" property="qq" />
+    <result column="is_accept_sms" jdbcType="VARCHAR" property="isAcceptSms" />
+    <result column="is_accept_mail" jdbcType="VARCHAR" property="isAcceptMail" />
+    <result column="member_level" jdbcType="VARCHAR" property="memberLevel" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="county" jdbcType="VARCHAR" property="county" />
+    <result column="home_address" jdbcType="VARCHAR" property="homeAddress" />
+    <result column="company" jdbcType="VARCHAR" property="company" />
+    <result column="company_address" jdbcType="VARCHAR" property="companyAddress" />
+    <result column="assign_time" jdbcType="TIMESTAMP" property="assignTime" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="cust_tag" jdbcType="VARCHAR" property="custTag" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="stage_id" jdbcType="INTEGER" property="stageId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="grant_mobile_status" jdbcType="INTEGER" property="grantMobileStatus" />
+    <result column="grant_name_status" jdbcType="INTEGER" property="grantNameStatus" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="group_tag" jdbcType="VARCHAR" property="groupTag" />
+    <result column="edu_level" jdbcType="VARCHAR" property="eduLevel" />
+    <result column="is_has_room" jdbcType="INTEGER" property="isHasRoom" />
+    <result column="is_has_car" jdbcType="INTEGER" property="isHasCar" />
+    <result column="is_has_child" jdbcType="INTEGER" property="isHasChild" />
+    <result column="cust_uid" jdbcType="VARCHAR" property="custUid" />
+    <result column="call_status" jdbcType="TINYINT" property="callStatus" />
+    <result column="last_call_time" jdbcType="TIMESTAMP" property="lastCallTime" />
+    <result column="call_result_response" jdbcType="TINYINT" property="callResultResponse" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, com_id, name, sex, birthday, age, age_group, marital, job, mobile, telephone, 
+    email, weixin_id, weixin_nice_name, wx_head_img_uri, qq, is_accept_sms, is_accept_mail, 
+    member_level, province, city, county, home_address, company, company_address, assign_time, 
+    user_id, user_name, type, source, cust_tag, update_time, create_time, stage_id, status,
+    grant_mobile_status, grant_name_status, create_user_id,
+    group_tag, edu_level, is_has_room, is_has_car, is_has_child, cust_uid, call_status, 
+    last_call_time, call_result_response
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from cust
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from cust
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.geeker.model.Cust">
+    insert into cust (id, com_id, name, 
+      sex, birthday, age, age_group, 
+      marital, job, mobile, 
+      telephone, email, weixin_id, 
+      weixin_nice_name, wx_head_img_uri, qq, 
+      is_accept_sms, is_accept_mail, member_level, 
+      province, city, county, 
+      home_address, company, company_address, 
+      assign_time, user_id, user_name, 
+      type, source, cust_tag, 
+      update_time, create_time, proc_flag, 
+      anayl_flag, stage_id, status, 
+      grant_mobile_status, grant_name_status, create_user_id, 
+      group_tag, edu_level, is_has_room, 
+      is_has_car, is_has_child, cust_uid, 
+      call_status, last_call_time, call_result_response
+      )
+    values (#{id,jdbcType=INTEGER}, #{comId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=CHAR}, #{birthday,jdbcType=DATE}, #{age,jdbcType=INTEGER}, #{ageGroup,jdbcType=VARCHAR}, 
+      #{marital,jdbcType=VARCHAR}, #{job,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
+      #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{weixinId,jdbcType=VARCHAR}, 
+      #{weixinNiceName,jdbcType=VARCHAR}, #{wxHeadImgUri,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, 
+      #{isAcceptSms,jdbcType=VARCHAR}, #{isAcceptMail,jdbcType=VARCHAR}, #{memberLevel,jdbcType=VARCHAR}, 
+      #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, 
+      #{homeAddress,jdbcType=VARCHAR}, #{company,jdbcType=VARCHAR}, #{companyAddress,jdbcType=VARCHAR}, 
+      #{assignTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR}, #{custTag,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{procFlag,jdbcType=BIT}, 
+      #{anaylFlag,jdbcType=SMALLINT}, #{stageId,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{grantMobileStatus,jdbcType=INTEGER}, #{grantNameStatus,jdbcType=INTEGER}, #{createUserId,jdbcType=INTEGER}, 
+      #{groupTag,jdbcType=VARCHAR}, #{eduLevel,jdbcType=VARCHAR}, #{isHasRoom,jdbcType=INTEGER}, 
+      #{isHasCar,jdbcType=INTEGER}, #{isHasChild,jdbcType=INTEGER}, #{custUid,jdbcType=VARCHAR}, 
+      #{callStatus,jdbcType=TINYINT}, #{lastCallTime,jdbcType=TIMESTAMP}, #{callResultResponse,jdbcType=TINYINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.geeker.model.Cust">
+    insert into cust
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="comId != null">
+        com_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="birthday != null">
+        birthday,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="ageGroup != null">
+        age_group,
+      </if>
+      <if test="marital != null">
+        marital,
+      </if>
+      <if test="job != null">
+        job,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="weixinId != null">
+        weixin_id,
+      </if>
+      <if test="weixinNiceName != null">
+        weixin_nice_name,
+      </if>
+      <if test="wxHeadImgUri != null">
+        wx_head_img_uri,
+      </if>
+      <if test="qq != null">
+        qq,
+      </if>
+      <if test="isAcceptSms != null">
+        is_accept_sms,
+      </if>
+      <if test="isAcceptMail != null">
+        is_accept_mail,
+      </if>
+      <if test="memberLevel != null">
+        member_level,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="county != null">
+        county,
+      </if>
+      <if test="homeAddress != null">
+        home_address,
+      </if>
+      <if test="company != null">
+        company,
+      </if>
+      <if test="companyAddress != null">
+        company_address,
+      </if>
+      <if test="assignTime != null">
+        assign_time,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="source != null">
+        source,
+      </if>
+      <if test="custTag != null">
+        cust_tag,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="procFlag != null">
+        proc_flag,
+      </if>
+      <if test="anaylFlag != null">
+        anayl_flag,
+      </if>
+      <if test="stageId != null">
+        stage_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="grantMobileStatus != null">
+        grant_mobile_status,
+      </if>
+      <if test="grantNameStatus != null">
+        grant_name_status,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="groupTag != null">
+        group_tag,
+      </if>
+      <if test="eduLevel != null">
+        edu_level,
+      </if>
+      <if test="isHasRoom != null">
+        is_has_room,
+      </if>
+      <if test="isHasCar != null">
+        is_has_car,
+      </if>
+      <if test="isHasChild != null">
+        is_has_child,
+      </if>
+      <if test="custUid != null">
+        cust_uid,
+      </if>
+      <if test="callStatus != null">
+        call_status,
+      </if>
+      <if test="lastCallTime != null">
+        last_call_time,
+      </if>
+      <if test="callResultResponse != null">
+        call_result_response,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="comId != null">
+        #{comId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=CHAR},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=DATE},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="ageGroup != null">
+        #{ageGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="marital != null">
+        #{marital,jdbcType=VARCHAR},
+      </if>
+      <if test="job != null">
+        #{job,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="weixinId != null">
+        #{weixinId,jdbcType=VARCHAR},
+      </if>
+      <if test="weixinNiceName != null">
+        #{weixinNiceName,jdbcType=VARCHAR},
+      </if>
+      <if test="wxHeadImgUri != null">
+        #{wxHeadImgUri,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null">
+        #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="isAcceptSms != null">
+        #{isAcceptSms,jdbcType=VARCHAR},
+      </if>
+      <if test="isAcceptMail != null">
+        #{isAcceptMail,jdbcType=VARCHAR},
+      </if>
+      <if test="memberLevel != null">
+        #{memberLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="homeAddress != null">
+        #{homeAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null">
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="companyAddress != null">
+        #{companyAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="assignTime != null">
+        #{assignTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="custTag != null">
+        #{custTag,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="procFlag != null">
+        #{procFlag,jdbcType=BIT},
+      </if>
+      <if test="anaylFlag != null">
+        #{anaylFlag,jdbcType=SMALLINT},
+      </if>
+      <if test="stageId != null">
+        #{stageId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="grantMobileStatus != null">
+        #{grantMobileStatus,jdbcType=INTEGER},
+      </if>
+      <if test="grantNameStatus != null">
+        #{grantNameStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="groupTag != null">
+        #{groupTag,jdbcType=VARCHAR},
+      </if>
+      <if test="eduLevel != null">
+        #{eduLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="isHasRoom != null">
+        #{isHasRoom,jdbcType=INTEGER},
+      </if>
+      <if test="isHasCar != null">
+        #{isHasCar,jdbcType=INTEGER},
+      </if>
+      <if test="isHasChild != null">
+        #{isHasChild,jdbcType=INTEGER},
+      </if>
+      <if test="custUid != null">
+        #{custUid,jdbcType=VARCHAR},
+      </if>
+      <if test="callStatus != null">
+        #{callStatus,jdbcType=TINYINT},
+      </if>
+      <if test="lastCallTime != null">
+        #{lastCallTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callResultResponse != null">
+        #{callResultResponse,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.geeker.model.Cust">
+    update cust
+    <set>
+      <if test="comId != null">
+        com_id = #{comId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=CHAR},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday,jdbcType=DATE},
+      </if>
+      <if test="age != null">
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="ageGroup != null">
+        age_group = #{ageGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="marital != null">
+        marital = #{marital,jdbcType=VARCHAR},
+      </if>
+      <if test="job != null">
+        job = #{job,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="weixinId != null">
+        weixin_id = #{weixinId,jdbcType=VARCHAR},
+      </if>
+      <if test="weixinNiceName != null">
+        weixin_nice_name = #{weixinNiceName,jdbcType=VARCHAR},
+      </if>
+      <if test="wxHeadImgUri != null">
+        wx_head_img_uri = #{wxHeadImgUri,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null">
+        qq = #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="isAcceptSms != null">
+        is_accept_sms = #{isAcceptSms,jdbcType=VARCHAR},
+      </if>
+      <if test="isAcceptMail != null">
+        is_accept_mail = #{isAcceptMail,jdbcType=VARCHAR},
+      </if>
+      <if test="memberLevel != null">
+        member_level = #{memberLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        county = #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="homeAddress != null">
+        home_address = #{homeAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null">
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="companyAddress != null">
+        company_address = #{companyAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="assignTime != null">
+        assign_time = #{assignTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="custTag != null">
+        cust_tag = #{custTag,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="procFlag != null">
+        proc_flag = #{procFlag,jdbcType=BIT},
+      </if>
+      <if test="anaylFlag != null">
+        anayl_flag = #{anaylFlag,jdbcType=SMALLINT},
+      </if>
+      <if test="stageId != null">
+        stage_id = #{stageId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="grantMobileStatus != null">
+        grant_mobile_status = #{grantMobileStatus,jdbcType=INTEGER},
+      </if>
+      <if test="grantNameStatus != null">
+        grant_name_status = #{grantNameStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="groupTag != null">
+        group_tag = #{groupTag,jdbcType=VARCHAR},
+      </if>
+      <if test="eduLevel != null">
+        edu_level = #{eduLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="isHasRoom != null">
+        is_has_room = #{isHasRoom,jdbcType=INTEGER},
+      </if>
+      <if test="isHasCar != null">
+        is_has_car = #{isHasCar,jdbcType=INTEGER},
+      </if>
+      <if test="isHasChild != null">
+        is_has_child = #{isHasChild,jdbcType=INTEGER},
+      </if>
+      <if test="custUid != null">
+        cust_uid = #{custUid,jdbcType=VARCHAR},
+      </if>
+      <if test="callStatus != null">
+        call_status = #{callStatus,jdbcType=TINYINT},
+      </if>
+      <if test="lastCallTime != null">
+        last_call_time = #{lastCallTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callResultResponse != null">
+        call_result_response = #{callResultResponse,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.geeker.model.Cust">
+    update cust
+    set com_id = #{comId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=CHAR},
+      birthday = #{birthday,jdbcType=DATE},
+      age = #{age,jdbcType=INTEGER},
+      age_group = #{ageGroup,jdbcType=VARCHAR},
+      marital = #{marital,jdbcType=VARCHAR},
+      job = #{job,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      weixin_id = #{weixinId,jdbcType=VARCHAR},
+      weixin_nice_name = #{weixinNiceName,jdbcType=VARCHAR},
+      wx_head_img_uri = #{wxHeadImgUri,jdbcType=VARCHAR},
+      qq = #{qq,jdbcType=VARCHAR},
+      is_accept_sms = #{isAcceptSms,jdbcType=VARCHAR},
+      is_accept_mail = #{isAcceptMail,jdbcType=VARCHAR},
+      member_level = #{memberLevel,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      county = #{county,jdbcType=VARCHAR},
+      home_address = #{homeAddress,jdbcType=VARCHAR},
+      company = #{company,jdbcType=VARCHAR},
+      company_address = #{companyAddress,jdbcType=VARCHAR},
+      assign_time = #{assignTime,jdbcType=TIMESTAMP},
+      user_id = #{userId,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      source = #{source,jdbcType=VARCHAR},
+      cust_tag = #{custTag,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      proc_flag = #{procFlag,jdbcType=BIT},
+      anayl_flag = #{anaylFlag,jdbcType=SMALLINT},
+      stage_id = #{stageId,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      grant_mobile_status = #{grantMobileStatus,jdbcType=INTEGER},
+      grant_name_status = #{grantNameStatus,jdbcType=INTEGER},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      group_tag = #{groupTag,jdbcType=VARCHAR},
+      edu_level = #{eduLevel,jdbcType=VARCHAR},
+      is_has_room = #{isHasRoom,jdbcType=INTEGER},
+      is_has_car = #{isHasCar,jdbcType=INTEGER},
+      is_has_child = #{isHasChild,jdbcType=INTEGER},
+      cust_uid = #{custUid,jdbcType=VARCHAR},
+      call_status = #{callStatus,jdbcType=TINYINT},
+      last_call_time = #{lastCallTime,jdbcType=TIMESTAMP},
+      call_result_response = #{callResultResponse,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectForPhoneBook" resultType="Map">
+    SELECT CONCAT('10100',LPAD(c.`id`,11,0)) AS name,
+    CASE c.`grant_name_status` WHEN 10 THEN CONCAT('客户',c.id) ELSE c.name END AS nickName,
+    c.mobile,
+    c.`grant_mobile_status` AS mobileStatus,
+    c.status
+    FROM cust c
+    WHERE c.`user_id` = #{userId} AND c.mobile IS NOT NULL
+    <if test="createTime != null">
+      and DATETIME(c.create_time) > DATETIME(#{createTime})
+    </if>
+    ORDER BY c.create_time DESC
+  </select>
+  <select id="selectById" resultType="String">
+    SELECT mobile
+    FROM cust
+    WHERE `user_id` = #{userId}
+    and id = #{id}
+    and status = 1
+  </select>
+</mapper>

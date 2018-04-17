@@ -14,19 +14,23 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("user")
-public class userController {
+public class UserController {
     @Resource
     private UserService userService;
+
     @RequestMapping("/getById")
     public Response getById(Integer id){
         return ResponseUtils.success(userService.getById(id));
     }
+
     @RequestMapping("/demo")
     public String demo(Integer id){
         return userService.getById(id).toString();
     }
+
     @RequestMapping("/getLoginUser")
     public Response getLoginUser(){
         return ResponseUtils.success(LoginUserUtil.getUser());
     }
+
 }
