@@ -19,7 +19,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
 * @Author TangZhen
@@ -37,15 +39,23 @@ public class LoginVerifyIntercepor implements HandlerInterceptor {
 
     private OpDeviceService opDeviceService;
 
-    public LoginVerifyIntercepor(JwtTokenUtil jwtTokenUtil,String secret,UserService userService,OpDeviceService opDeviceService) {
+    private List<String> whiteList;
+
+    public LoginVerifyIntercepor(JwtTokenUtil jwtTokenUtil,String secret,UserService userService,
+                                 OpDeviceService opDeviceService,List<String> whiteList) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.secret = secret;
         this.userService = userService;
         this.opDeviceService = opDeviceService;
+        this.whiteList = whiteList;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String path = request.getRequestURI();
+        if(whiteList.contains(path)){
+            return true;
+        }
         Map<String, String> cookieMap = CookieUtil.getCookies(request);
         String token = cookieMap.get("token");
         response.setContentType("application/json;charset=UTF-8");

@@ -32,6 +32,8 @@ public class OpDevice {
 
     private Integer groupId;
 
+    private Date createTime;
+
     private Date boundTime;
 
     private Integer boundUserId;

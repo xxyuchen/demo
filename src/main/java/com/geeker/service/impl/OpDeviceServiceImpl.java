@@ -1,8 +1,10 @@
 package com.geeker.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.geeker.config.RestUrlConfig;
 import com.geeker.enums.DeviceEnum;
+import com.geeker.event.PublicEvent;
 import com.geeker.mapper.geeker.CustGroupMapper;
 import com.geeker.mapper.geeker.CustMapper;
 import com.geeker.mapper.geeker.UserMapper;
@@ -21,10 +23,19 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -51,6 +62,9 @@ public class OpDeviceServiceImpl implements OpDeviceService {
 
     @Resource
     private CustGroupMapper custGroupMapper;
+
+    @Resource
+    private ApplicationEventPublisher eventPublisher;
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -367,6 +381,51 @@ public class OpDeviceServiceImpl implements OpDeviceService {
     @Override
     public OpDevice selectByPrimaryKey(String id) {
         return opDeviceMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 上传音频
+     * @param file
+     * @return
+     */
+    @Override
+    public Response uploadVoice(MultipartFile file) throws Exception {
+        if(null == file){
+            throw new Exception("音频文件不能为空！");
+        }
+        String voiceUri = "";
+        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+        File tempFile = null;
+        try{
+            String contentType = file.getContentType();
+            String root_fileName = file.getOriginalFilename();
+            log.info("上传音频:name={},type={}", root_fileName, contentType);
+            String tempFileName = UUID.randomUUID() + root_fileName.substring(root_fileName.lastIndexOf("."));
+            String tempFilePath = restUrlConfig.getLocalVoicePath() + tempFileName;
+            tempFile = new File(tempFilePath);
+            file.transferTo(tempFile);
+
+            FileSystemResource fileSystemResource = new FileSystemResource(tempFilePath);
+            param.add("fileType", "voice");
+            param.add("file",fileSystemResource );
+            HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(restUrlConfig.getUploadFileUrl(), HttpMethod.POST, httpEntity, String.class);
+            JSONObject result = JSON.parseObject(responseEntity.getBody());
+            if (result.getInteger("status") == 200) {
+                Map<String, Object> data = result.getJSONObject("data");
+                voiceUri = data.get("qnUrl").toString();
+            } else {
+                log.info("音频上传失败！【{}】,{}", result.getInteger("status"), result.getString("message"));
+                throw new Exception("音频上传失败！");
+            }
+        } catch (Exception e) {
+            log.error("音频上传异常：",e);
+            throw e;
+        }finally {
+            tempFile.delete();
+            eventPublisher.publishEvent(new PublicEvent.ClientReportEvent("",voiceUri));
+        }
+        return ResponseUtils.success(voiceUri);
     }
 }
 

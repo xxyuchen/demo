@@ -5,8 +5,10 @@ import com.geeker.response.Response;
 import com.geeker.response.ResponseUtils;
 import com.geeker.service.OpDeviceService;
 import com.geeker.utils.LoginUserUtil;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -57,5 +59,13 @@ public class OpDevicePhoneController {
     @RequestMapping("/sendSms")
     public Response sendSms(Integer custId,String parm) throws Exception {
         return opDeviceService.sendSms(custId,parm);
+    }
+    /**
+     * 上传音频
+     * @return
+     */
+    @RequestMapping("/uploadVoice")
+    public Response  uploadVoice(@Validated MultipartFile file) throws Exception {
+        return opDeviceService.uploadVoice(file);
     }
 }

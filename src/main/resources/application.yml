@@ -39,4 +39,12 @@ market:
     phoneBook: http://192.168.5.3:10011/cmd/phoneBook/phoneBook
     group: http://192.168.5.3:10011/cmd/phoneBook/group
     sendSms: http://192.168.5.3:10011/cmd/phoneBook/smsSendMsg
+    uploadFileUrl: http://192.168.0.152:8451/upload/file #FILE-SERVICE
+    localVoicePath: F:\ftp_home\geeker\voice\ #/ftp_home/geeker/voice/tempVoice/
+    upLoadVocie: http://192.168.5.3:10011/cmd/phoneBook/upLoadVocie
+request:
+  Uri:
+    whiteList:
+      - /register/register
+      - /register/registerw
 

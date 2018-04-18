@@ -3,7 +3,9 @@ package com.geeker.service;
 import com.geeker.model.OpDevice;
 import com.geeker.response.Response;
 import com.geeker.vo.OpDeviceVo;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -28,4 +30,6 @@ public interface OpDeviceService {
     OpDevice selectByBoundUserId(Integer userId);
 
     OpDevice selectByPrimaryKey(String id);
+
+    Response uploadVoice(MultipartFile file) throws Exception;
 }
