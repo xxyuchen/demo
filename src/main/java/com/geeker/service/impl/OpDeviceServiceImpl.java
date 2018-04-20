@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.geeker.config.RestUrlConfig;
 import com.geeker.enums.DeviceEnum;
-import com.geeker.event.PublicEvent;
 import com.geeker.mapper.geeker.CustGroupMapper;
 import com.geeker.mapper.geeker.CustMapper;
 import com.geeker.mapper.geeker.UserMapper;
@@ -23,7 +22,6 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -62,9 +60,6 @@ public class OpDeviceServiceImpl implements OpDeviceService {
 
     @Resource
     private CustGroupMapper custGroupMapper;
-
-    @Resource
-    private ApplicationEventPublisher eventPublisher;
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -122,6 +117,10 @@ public class OpDeviceServiceImpl implements OpDeviceService {
         if (null == opDevice) {
             throw new Exception("该设备不存在！");
         }
+        //判断该绑定人是否已绑定设备
+        if (null != opDeviceMapper.selectByBoundUserId(vo.getBoundUserId())) {
+            throw new Exception("该用户已绑定设备！");
+        }
         User user = new User();
         user.setId(vo.getBoundUserId());
         user.setCompanyId(LoginUserUtil.getUser().getCompanyId());
@@ -135,21 +134,22 @@ public class OpDeviceServiceImpl implements OpDeviceService {
         map.put("userId", user.getId());
         if (null != opDevice.getBoundUserId()) {
             //先解绑再绑定
-            Response response = restTemplate.getForObject(restUrlConfig.getRemoveBound(), Response.class, JSONObject.toJSONString(map));
-            if (response.getCode() != 200) {
-                return response;
+            CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getRemoveBound(), map, CamelResponse.class);
+            if (camelResponse.getCode() != 200) {
+                return camelResponse;
             }
         }
         map.put("boundUserId", vo.getBoundUserId());
-        Response response = restTemplate.getForObject(restUrlConfig.getBound(), Response.class, JSONObject.toJSONString(map));
-        if (response.getCode() != 200) {
-            return response;
+        CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getBound(), map, CamelResponse.class);
+
+        if (camelResponse.getCode() != 200) {
+            return camelResponse;
         }
         OpDevice device = new OpDevice();
         device.setId(vo.getId());
         device.setBoundUserId(dto.getId());
         device.setBoundTime(new Date());
-        device.setStatus(DeviceEnum.deviceStatusEnum.UNBOUND.getCode());
+        device.setStatus(DeviceEnum.deviceStatusEnum.BOUND.getCode());
         opDeviceMapper.updateByPrimaryKeySelective(device);
         return ResponseUtils.success();
     }
@@ -170,8 +170,8 @@ public class OpDeviceServiceImpl implements OpDeviceService {
         map.put("deviceId", id);
         map.put("comId", user.getCompanyId());
         map.put("userId", user.getId());
-        Response response = restTemplate.getForObject(restUrlConfig.getRemoveBound(), Response.class, JSONObject.toJSONString(map));
-        if (response.getCode() == 200) {
+        CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getRemoveBound(), map, CamelResponse.class);
+        if (camelResponse.getCode() == 200) {
             OpDevice opDevice = new OpDevice();
             opDevice.setId(id);
             opDevice.setBoundTime(new Date());
@@ -180,7 +180,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
             return ResponseUtils.success();
 
         } else {
-            return response;
+            return camelResponse;
         }
     }
 
@@ -194,11 +194,11 @@ public class OpDeviceServiceImpl implements OpDeviceService {
     @Override
     public Response call(Integer custId) throws Exception {
         User user = LoginUserUtil.getUser();
-        if(null==custId){
+        if (null == custId) {
             throw new Exception("客户id不能为空！");
         }
         String mobile = custMapper.selectById(user.getId(), custId);
-        if(StringUtils.isEmpty(mobile)){
+        if (StringUtils.isEmpty(mobile)) {
             throw new Exception("该客户无电话号码！");
         }
         Map<String, Object> map = new HashMap<>(4);
@@ -247,11 +247,12 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                         }
                         List<Map<String, String>> data = new ArrayList<>(20);
                         List<String> delMobiles = new ArrayList<>();
+                        Map<String, String> stringMap;
                         for (Map map : list) {
                             if (!map.get("status").equals(1)) {
                                 delMobiles.add(map.get("name").toString());
                             } else {
-                                Map<String, String> stringMap = new HashMap<>(5);
+                                stringMap = new HashMap<>(5);
                                 if (encrypMap.containsKey(map.get("mobile"))) {
                                     stringMap.put("phone", encrypMap.get(map.get("mobile")));
                                 } else {
@@ -276,7 +277,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                         pageNum++;
                     }
                 } catch (Exception e) {
-                    log.error("同步手机通讯录异常",e);
+                    log.error("同步手机通讯录异常", e);
                 }
             }
 
@@ -308,17 +309,19 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                         }
                         List<Integer> delGroups = new ArrayList<>();
                         List<Map<String, Object>> data = new ArrayList<>();
+                        Map<String, Object> groupMap;
+                        List<String> custs = new ArrayList<>();
                         for (Map map : list) {
                             if (!map.get("status").equals(1)) {
                                 delGroups.add((Integer) map.get("id"));
                             } else {
-                                Map<String, Object> groupMap = new HashMap<>(3);
+                                groupMap = new HashMap<>(3);
                                 groupMap.put("id", map.get("id"));
                                 groupMap.put("name", map.get("name"));
-                                List<String> custs = custGroupMapper.selectCustForMarket((Integer) map.get("id"));
+                                custs = custGroupMapper.selectCustForMarket((Integer) map.get("id"));
                                 Set<String> set = new HashSet<>();
-                                for(String name : custs){
-                                    if(StringUtils.isNotEmpty(name)){
+                                for (String name : custs) {
+                                    if (StringUtils.isNotEmpty(name)) {
                                         set.add(name);
                                     }
                                 }
@@ -348,20 +351,21 @@ public class OpDeviceServiceImpl implements OpDeviceService {
 
     /**
      * 发送短信
+     *
      * @param custId
      * @return
      */
     @Override
-    public Response sendSms(Integer custId,String parm) throws Exception {
+    public Response sendSms(Integer custId, String parm) throws Exception {
         User user = LoginUserUtil.getUser();
-        if(null==custId){
+        if (null == custId) {
             throw new Exception("客户id不能为空！");
         }
-        if(StringUtils.isEmpty(parm)){
+        if (StringUtils.isEmpty(parm)) {
             throw new Exception("短信内容不能为空！");
         }
         String mobile = custMapper.selectById(user.getId(), custId);
-        if(StringUtils.isEmpty(mobile)){
+        if (StringUtils.isEmpty(mobile)) {
             throw new Exception("该客户无电话号码！");
         }
         Map<String, Object> map = new HashMap<>(5);
@@ -385,18 +389,19 @@ public class OpDeviceServiceImpl implements OpDeviceService {
 
     /**
      * 上传音频
+     *
      * @param file
      * @return
      */
     @Override
     public Response uploadVoice(MultipartFile file) throws Exception {
-        if(null == file){
+        if (null == file) {
             throw new Exception("音频文件不能为空！");
         }
         String voiceUri = "";
         MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
         File tempFile = null;
-        try{
+        try {
             String contentType = file.getContentType();
             String root_fileName = file.getOriginalFilename();
             log.info("上传音频:name={},type={}", root_fileName, contentType);
@@ -407,7 +412,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
 
             FileSystemResource fileSystemResource = new FileSystemResource(tempFilePath);
             param.add("fileType", "voice");
-            param.add("file",fileSystemResource );
+            param.add("file", fileSystemResource);
             HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param);
             ResponseEntity<String> responseEntity = restTemplate.exchange(restUrlConfig.getUploadFileUrl(), HttpMethod.POST, httpEntity, String.class);
             JSONObject result = JSON.parseObject(responseEntity.getBody());
@@ -419,11 +424,11 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                 throw new Exception("音频上传失败！");
             }
         } catch (Exception e) {
-            log.error("音频上传异常：",e);
+            log.error("音频上传异常：", e);
             throw e;
-        }finally {
+        } finally {
             tempFile.delete();
-            eventPublisher.publishEvent(new PublicEvent.ClientReportEvent("",voiceUri));
+            //eventPublisher.publishEvent(new PublicEvent.ClientReportEvent("",voiceUri));
         }
         return ResponseUtils.success(voiceUri);
     }

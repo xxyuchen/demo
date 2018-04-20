@@ -97,4 +97,17 @@ public class DateUtils {
         int day = (int) min;
         return day;
     }
+
+    /**
+     * 与当前时间相减的分钟数
+     *
+     * @return
+     */
+    public static int getNowByMinute(Long date) {
+        Date now = new Date();
+        long second = (now.getTime() - date) / (1000);
+        long min = second / 60;
+        int day = (int) min;
+        return day;
+    }
 }

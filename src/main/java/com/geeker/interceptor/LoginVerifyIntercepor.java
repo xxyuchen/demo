@@ -1,13 +1,16 @@
 package com.geeker.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.geeker.config.RequestUriConfig;
 import com.geeker.model.OpDevice;
 import com.geeker.model.User;
 import com.geeker.response.ResponseUtils;
 import com.geeker.service.OpDeviceService;
 import com.geeker.service.UserService;
 import com.geeker.utils.CookieUtil;
+import com.geeker.utils.DateUtils;
 import com.geeker.utils.JwtTokenUtil;
+import com.geeker.utils.Md5Util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -39,78 +42,66 @@ public class LoginVerifyIntercepor implements HandlerInterceptor {
 
     private OpDeviceService opDeviceService;
 
-    private List<String> whiteList;
+    private RequestUriConfig requestUriConfig;
 
     public LoginVerifyIntercepor(JwtTokenUtil jwtTokenUtil,String secret,UserService userService,
-                                 OpDeviceService opDeviceService,List<String> whiteList) {
+                                 OpDeviceService opDeviceService,RequestUriConfig requestUriConfig) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.secret = secret;
         this.userService = userService;
         this.opDeviceService = opDeviceService;
-        this.whiteList = whiteList;
+        this.requestUriConfig = requestUriConfig;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String path = request.getRequestURI();
-        if(whiteList.contains(path)){
+        String token;
+        if(requestUriConfig.getWhiteList().contains(path)){
             return true;
         }
-        Map<String, String> cookieMap = CookieUtil.getCookies(request);
-        String token = cookieMap.get("token");
+        token = request.getHeader("token");
+        if(StringUtils.isEmpty(token)){
+            Map<String, String> cookieMap = CookieUtil.getCookies(request);
+            token = cookieMap.get("token");
+        }
         response.setContentType("application/json;charset=UTF-8");
         HttpSession session = request.getSession();
+        log.info("token:【{}】",token);
         if (StringUtils.isEmpty(token)) {
-            String market = cookieMap.get("market");
-            if(StringUtils.isEmpty(market)){
-                response.getWriter().write(JSON.toJSONString(ResponseUtils.error(401, "请先登录！")));
-                return false;
-            }else {
-                String[] markets = market.split(":");
-                Integer userId = Integer.valueOf(markets[0]);
-                String deviceId = markets[1];
-                OpDevice opDevice = opDeviceService.selectByPrimaryKey(deviceId);
-                if(null == opDevice){
-                    response.getWriter().write(JSON.toJSONString(ResponseUtils.error(500, "设备不存在！")));
-                    return false;
-                }
-                if(null == opDevice.getBoundUserId()){
-                    response.getWriter().write(JSON.toJSONString(ResponseUtils.error(500, "该设备未绑定任何用户！")));
-                    return false;
-                }
-                User user = userService.getById(opDevice.getBoundUserId());
-                if(null == user){
-                    response.getWriter().write(JSON.toJSONString(ResponseUtils.error(500, "绑定用户不存在！")));
-                    return false;
-                }
-                if(null==user){
-                    response.getWriter().write(JSON.toJSONString(ResponseUtils.error(401, "没有找到有效用户信息！")));
-                    return false;
-                }
-                user.setDeviceId(deviceId);
-                session.setAttribute(market,user);
-            }
+            response.getWriter().write(JSON.toJSONString(ResponseUtils.error(401, "请先登录！")));
+            return false;
         } else {
             try {
-                Jws<Claims> jws = jwtTokenUtil.parse(token,secret);
-                String username = jwtTokenUtil.getUsernameFromToken(jws);
-                log.info("checking authentication " + username);
-                if (StringUtils.isBlank(username)) {
-                    response.getWriter().write(JSON.toJSONString(ResponseUtils.error(401, "没有找到有效用户信息！")));
+                if(path.equals(requestUriConfig.getLoginGeeker())){//登录数聚客
+                    String deviceId = request.getParameter("deviceId");
+                    Long timestamp = Long.valueOf(request.getHeader("timestamp"));
+                    if(Md5Util.myEncrypt32(deviceId+timestamp,requestUriConfig.getTokenKey()).equals(token)){
+                        return true;
+                    }
+                    response.getWriter().write(JSON.toJSONString(ResponseUtils.error(401, "登录token无效！")));
                     return false;
+                }else {
+                    Jws<Claims> jws = jwtTokenUtil.parse(token,secret);
+                    String username = jwtTokenUtil.getUsernameFromToken(jws);
+                    log.info("checking authentication " + username);
+                    if (StringUtils.isBlank(username)) {
+                        response.getWriter().write(JSON.toJSONString(ResponseUtils.error(401, "没有找到有效用户信息！")));
+                        return false;
+                    }
+                    User user = userService.getByLoginName(username);
+                    if(null == user){
+                        response.getWriter().write(JSON.toJSONString(ResponseUtils.error(401, "没有找到有效用户信息！")));
+                        return false;
+                    }
+                    OpDevice opDevice = opDeviceService.selectByBoundUserId(user.getId());
+                    if(null != opDevice){
+                        user.setDeviceId(opDevice.getId());
+                        /*response.getWriter().write(JSON.toJSONString(ResponseUtils.error(500, "未查询到绑定设备！")));
+                        return false;*/
+                    }
+                    session.setAttribute(token,user);
                 }
-                User user = userService.getByLoginName(username);
-                if(null == user){
-                    response.getWriter().write(JSON.toJSONString(ResponseUtils.error(401, "没有找到有效用户信息！")));
-                    return false;
-                }
-                OpDevice opDevice = opDeviceService.selectByBoundUserId(user.getId());
-                if(null == opDevice){
-                    response.getWriter().write(JSON.toJSONString(ResponseUtils.error(500, "未查询到绑定设备！")));
-                    return false;
-                }
-                user.setDeviceId(opDevice.getId());
-                session.setAttribute(token,user);
             }catch (ExpiredJwtException e) {
                 log.error("token验证异常",e);
                 response.getWriter().write(JSON.toJSONString(ResponseUtils.error(401, "Token已失效！")));

@@ -324,11 +324,12 @@
   </select>
 
   <select id="selectByUserId" resultType="Map">
-    SELECT u.user_name AS userName,a.departId,a.departName FROM USER u
+    SELECT u.user_name AS userName,a.id as departId,a.depart_name as departName FROM USER u
     LEFT JOIN (
     SELECT DISTINCT
     cd.`id`,
-    cd.`depart_name`
+    cd.`depart_name`,
+    sr.`from_id`
     FROM
     conf_depart cd,
     sys_relation sr
@@ -340,8 +341,9 @@
       and cd.`is_admin` = 0
       and cd.status = 1
     </where>) a
-    ON u.`id` = a.userId
+    ON u.`id` = a.from_id
     WHERE u.`id` = #{id}
+    limit 1
   </select>
 
   <select id="selectByWhere" resultMap="BaseResultMap">

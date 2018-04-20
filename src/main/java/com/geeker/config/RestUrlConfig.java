@@ -36,4 +36,8 @@ public class RestUrlConfig {
 
     private String upLoadVocie;
 
+    private String loginGeeker;
+
+    private String reportLogin;
+
 }

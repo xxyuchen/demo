@@ -2,6 +2,9 @@ package com.geeker.response;
 
 import com.github.pagehelper.PageInfo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class ResponseUtils {
 
     /**
@@ -29,8 +32,9 @@ public abstract class ResponseUtils {
      * @return 响应对象
      */
     public static Response success(String dataName, Object data) {
-        Response response = new CamelResponse();
-        response.putData(dataName, data);
+        Map<String, Object> map = new HashMap<>(1);
+        map.put(dataName,data);
+        Response response = new CamelResponse(map);
         return response;
     }
 

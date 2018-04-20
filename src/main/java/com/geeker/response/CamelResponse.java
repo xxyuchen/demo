@@ -36,7 +36,7 @@ public class CamelResponse implements Response {
      * 默认不成功的构造方法
      */
     CamelResponse() {
-        this(false);
+        this(true);
     }
 
     /**

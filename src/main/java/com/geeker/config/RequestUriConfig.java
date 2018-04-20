@@ -12,7 +12,11 @@ import java.util.List;
 @Configuration
 @ConfigurationProperties(prefix = "request.uri")
 @Data
-public class WhiteListConfig {
+public class RequestUriConfig {
 
     private List<String> whiteList;
+
+    private String loginGeeker;
+
+    private String tokenKey;
 }

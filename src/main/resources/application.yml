@@ -12,6 +12,10 @@ spring:
     cookieName: token
     writeCookie: true
     writeHeader: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.0.156:5555/eureka/
 geeker:
   datasource:
     jdbcUrl: jdbc:mysql://192.168.0.160:3306/geeker?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
@@ -42,9 +46,13 @@ market:
     uploadFileUrl: http://192.168.0.152:8451/upload/file #FILE-SERVICE
     localVoicePath: F:\ftp_home\geeker\voice\ #/ftp_home/geeker/voice/tempVoice/
     upLoadVocie: http://192.168.5.3:10011/cmd/phoneBook/upLoadVocie
+    loginGeeker: http://192.168.0.155/user-apis/login.action
+    reportLogin: http://192.168.5.3:10011/cmd/sys/loginGeeker
 request:
   Uri:
     whiteList:
       - /register/register
       - /register/registerw
+    loginGeeker: /user/loginGeeker
+    tokenKey: cr6Em1LMZEfd1okkRP1p0naBCdl2FmjE
 

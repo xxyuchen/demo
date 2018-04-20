@@ -1,5 +1,6 @@
 package com.geeker.utils;
 import java.security.MessageDigest;
+import java.util.Date;
 
 /**
 * @Author TangZhen
@@ -70,8 +71,9 @@ public class Md5Util {
 
     public static void main(String[] args) {
         Long str=System.currentTimeMillis();
-        System.out.print(str+"\n");
-        System.out.print(Md5Util.encrypt32("B8C02915B02F1BBC4E710B5B78F74B6B"+"1504491625"));
+        Long dateTime =(new Date()).getTime();
+        System.out.println(dateTime);
+        System.out.println(Md5Util.myEncrypt32("cr6Em1LMZEfd1okkRP1p0naBCdl2FmjE",dateTime+"4c116ee17d14"));
     }
 
 }

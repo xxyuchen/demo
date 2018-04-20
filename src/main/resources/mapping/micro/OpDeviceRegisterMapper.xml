@@ -23,9 +23,9 @@
       and register_code = #{registerCode,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.geeker.model.OpDeviceRegister">
-    insert into op_device_register (id, register_code, device_id, 
+    insert into op_device_register (register_code, device_id,
       com_id, create_time)
-    values (#{id,jdbcType=INTEGER}, #{registerCode,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
+    values (#{registerCode,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR},
       #{comId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.geeker.model.OpDeviceRegister">

@@ -38,14 +38,14 @@
     insert into op_device (id, mobile, imsi, 
       imei, model, cpu, ram, 
       mem, network_mode, remark, 
-      sys_id, com_id, group_id, create_time
+      sys_id, com_id, group_id, create_time,
       bound_time, bound_user_id, status
       )
     values (#{id,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR}, 
       #{imei,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{cpu,jdbcType=VARCHAR}, #{ram,jdbcType=VARCHAR}, 
       #{mem,jdbcType=VARCHAR}, #{networkMode,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
-      #{sysId,jdbcType=INTEGER}, #{comId,jdbcType=INTEGER}, #{groupId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
-      #{boundTime,jdbcType=TIMESTAMP}, #{boundUserId,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}
+      #{sysId,jdbcType=INTEGER}, #{comId,jdbcType=INTEGER}, #{groupId,jdbcType=INTEGER}, #{createTime},
+      #{boundTime}, #{boundUserId,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.geeker.model.OpDevice">
@@ -252,5 +252,6 @@
     <include refid="Base_Column_List" />
     from op_device
     where bound_user_id = #{id,jdbcType=VARCHAR}
+    limit 1
   </select>
 </mapper>

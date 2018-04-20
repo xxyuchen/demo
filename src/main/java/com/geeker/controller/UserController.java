@@ -33,4 +33,9 @@ public class UserController {
         return ResponseUtils.success(LoginUserUtil.getUser());
     }
 
+    @RequestMapping("/loginGeeker")
+    public Response loginGeeker(String deviceId){
+        return userService.loginGeeker(deviceId);
+    }
+
 }

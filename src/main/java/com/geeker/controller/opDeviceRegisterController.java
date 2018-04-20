@@ -1,6 +1,5 @@
 package com.geeker.controller;
 
-import com.geeker.model.OpDeviceRegister;
 import com.geeker.response.Response;
 import com.geeker.service.OpDeviceRegisterService;
 import com.geeker.vo.OpDeviceRegisterVo;

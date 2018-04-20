@@ -7,7 +7,6 @@ import com.geeker.model.OpDeviceRegister;
 import com.geeker.response.Response;
 import com.geeker.response.ResponseUtils;
 import com.geeker.service.OpDeviceRegisterService;
-import com.geeker.utils.DateUtils;
 import com.geeker.utils.LoginUserUtil;
 import com.geeker.utils.SecureNumberUtil;
 import com.geeker.vo.OpDeviceRegisterVo;
@@ -35,24 +34,26 @@ public class OpDeviceRegisterServiceImpl implements OpDeviceRegisterService {
 
     @Resource
     private OpDeviceMapper opDeviceMapper;
+
     /**
      * 获取注册码
+     *
      * @param num
      * @return
      */
     @Override
     public Response getRegisterCodes(Integer num) throws Exception {
-        if(null == num){
+        if (null == num) {
             num = 1;
         }
-        if(num>100){
+        if (num > 100) {
             num = 100;
         }
         String stringRandom = "";
         OpDeviceRegister opDeviceRegister;
         Integer comId = LoginUserUtil.getUser().getCompanyId();
         List<String> codes = new ArrayList<>(num);
-        for(int i = 1;i<=num;i++){
+        for (int i = 1; i <= num; i++) {
             stringRandom = SecureNumberUtil.getStringRandom(6);
             opDeviceRegister = new OpDeviceRegister();
             opDeviceRegister.setCreateTime(new Date());
@@ -61,27 +62,28 @@ public class OpDeviceRegisterServiceImpl implements OpDeviceRegisterService {
             opDeviceRegisterMapper.insert(opDeviceRegister);
             codes.add(stringRandom);
         }
-        return ResponseUtils.success("codes",codes);
+        return ResponseUtils.success("codes", codes);
     }
 
     /**
      * 注册设备
+     *
      * @param vo
      * @return
      * @throws Exception
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = RuntimeException.class)
+    @Transactional(value = "microTransactionManager", propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Response register(OpDeviceRegisterVo vo) throws Exception {
-        if(StringUtils.isEmpty(vo.getId())){
+        if (StringUtils.isEmpty(vo.getId())) {
             throw new Exception("设备id不能为空！");
         }
         //注册码校验
         OpDeviceRegister deviceRegister = opDeviceRegisterMapper.selectByPrimaryKey(vo.getRegisterCode());
-        if(null == deviceRegister){
+        if (null == deviceRegister) {
             throw new Exception("注册码不存在！");
         }
-        if(StringUtils.isNotEmpty(deviceRegister.getDeviceId())){
+        if (StringUtils.isNotEmpty(deviceRegister.getDeviceId())) {
             throw new Exception("该注册码已失效，请重新注册！");
         }
         /*if(DateUtils.getTwoDaySubByMinute(deviceRegister.getCreateTime(),new Date())>30){//注册码30分钟失效
@@ -91,16 +93,16 @@ public class OpDeviceRegisterServiceImpl implements OpDeviceRegisterService {
             OpDeviceRegister opDeviceRegister = new OpDeviceRegister();
             opDeviceRegister.setRegisterCode(vo.getRegisterCode());
             opDeviceRegister.setDeviceId(vo.getId());
-            opDeviceRegisterMapper.updateByPrimaryKey(opDeviceRegister);
+            opDeviceRegisterMapper.updateByPrimaryKeySelective(opDeviceRegister);
 
             OpDevice opDevice = new OpDevice();
-            BeanUtils.copyProperties(vo,opDevice);
+            BeanUtils.copyProperties(vo, opDevice);
             opDevice.setComId(deviceRegister.getComId());
             opDevice.setCreateTime(new Date());
             opDeviceMapper.insert(opDevice);
-        }catch (Exception e){
-            log.info("设备注册失败！",e);
-            throw new RuntimeException();
+        } catch (Exception e) {
+            log.info("设备注册失败！", e);
+            throw new RuntimeException(e);
         }
         return ResponseUtils.success();
     }
