@@ -54,5 +54,5 @@ request:
       - /register/register
     loginGeeker: /user/loginGeeker
     tokenKey: cr6Em1LMZEfd1okkRP1p0naBCdl2FmjE
-env: prd
+env: test
 
