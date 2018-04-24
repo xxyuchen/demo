@@ -78,7 +78,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
      */
     @Override
     public Response getList(OpDeviceVo vo) {
-        PageHelper.startPage(vo.getPageIndex(), vo.getPageSize());
+        PageHelper.startPage(null == vo.getPageIndex()?1:vo.getPageIndex(), null == vo.getPageSize()?20:vo.getPageSize());
         List<OpDevice> list = opDeviceMapper.getList(vo);
         List<OpDeviceVo> voList = new ArrayList<>(20);
         User user = LoginUserUtil.getUser();
@@ -95,7 +95,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
         }
         PageInfo pageInfo = new PageInfo(list);
         pageInfo.setList(voList);
-        return ResponseUtils.success(pageInfo);
+        return ResponseUtils.successPage(pageInfo);
     }
 
     /**
@@ -132,6 +132,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
         map.put("deviceId", vo.getId());
         map.put("comId", user.getCompanyId());
         map.put("userId", user.getId());
+        map.put("userName",user.getUserName());
         if (null != opDevice.getBoundUserId()) {
             //先解绑再绑定
             CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getRemoveBound(), map, CamelResponse.class);
@@ -260,6 +261,10 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                                 }
                                 stringMap.put("secureNumber", map.get("name").toString());
                                 stringMap.put("nickname", map.get("nickName").toString());
+                                String sex = (String) map.get("sex");
+                                if(StringUtils.isNotEmpty(sex)){
+                                    stringMap.put("sex", sex);
+                                }
                                 data.add(stringMap);
                             }
                         }
@@ -268,12 +273,16 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                         map.put("delMobiles", delMobiles);
                         map.put("deviceId", deviceId);
                         map.put("comId", companyId);
+                        map.put("userId",id);
                         CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getPhoneBook(), map, CamelResponse.class);
                         if (camelResponse.getCode() != 200) {
                             log.error("同步通讯录失败==>批次：{}result：{}", pageNum, camelResponse.getMessage());
                         }
                         PageInfo pageInfo = new PageInfo(list);
                         isHasNext = pageInfo.isHasNextPage();
+                        if(pageNum>5){
+                            isHasNext = false;
+                        }
                         pageNum++;
                     }
                 } catch (Exception e) {
@@ -334,6 +343,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                         map.put("delGroups", delGroups);
                         map.put("deviceId", deviceId);
                         map.put("comId", companyId);
+                        map.put("userId",id);
                         CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getGroup(), map, CamelResponse.class);
                         if (camelResponse.getCode() != 200) {
                             log.error("同步群组失败==>批次：{}result：{}", pageNum, camelResponse.getMessage());

@@ -23,11 +23,7 @@ public class LoginUserUtil {
      */
     public static User getUser() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String token = CookieUtil.getCookies(request).get("token");
-        if(StringUtils.isEmpty(token)){
-            token = CookieUtil.getCookies(request).get("market");
-        }
-        return (User) request.getSession().getAttribute(token);
+        return (User) request.getSession().getAttribute("userSession");
     }
 
 

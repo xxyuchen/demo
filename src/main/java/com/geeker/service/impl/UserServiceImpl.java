@@ -11,6 +11,7 @@ import com.geeker.response.CamelResponse;
 import com.geeker.response.Response;
 import com.geeker.response.ResponseUtils;
 import com.geeker.service.UserService;
+import com.geeker.utils.LoginUserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -63,14 +64,14 @@ public class UserServiceImpl implements UserService {
         //指令上报
         OpDevice opDevice = opDeviceMapper.selectByPrimaryKey(deviceId);
         if (null == opDevice) {
-            return ResponseUtils.error(500, "设备不存在！");
+            return ResponseUtils.error(5005, "设备不存在！");
         }
         if (null == opDevice.getBoundUserId()) {
-            return ResponseUtils.error(500, "该设备未绑定任何用户！");
+            return ResponseUtils.error(5006, "该设备未绑定任何用户！");
         }
         User user = userMapper.selectByPrimaryKey(opDevice.getBoundUserId());
         if (null == user) {
-            return ResponseUtils.error(500, "绑定用户异常！");
+            return ResponseUtils.error(5006, "绑定用户异常！");
         }
         Map<String, Object> map = new HashMap<>(5);
         map.put("deviceId", deviceId);
@@ -80,18 +81,22 @@ public class UserServiceImpl implements UserService {
         log.info("登录指令上报情况：",camelResponse);
         //登录数聚客
         Map<String,Object> loginMap = new HashMap<>();
-        loginMap.put("loginName","wumin");
-        loginMap.put("loginPwd","111111");
-        loginMap.put("type",1);
+        loginMap.put("loginName", user.getLoginName());
+        /*loginMap.put("loginPwd","111111");
+        loginMap.put("type",1);*/
         CamelResponse response = restTemplate.postForObject(restUrlConfig.getLoginGeeker(), loginMap, CamelResponse.class);
-        if(response.getCode().equals(200)){
-            JSONObject json =  JSONObject.parseObject(JSON.toJSONString(response.getData()));
-            Map<String,Object> data = new HashMap<>(2);
-            data.put("token",json.getString("token"));
-            data.put("expire",json.getLong("expire"));
-            return ResponseUtils.success(data);
+        if(null != response){
+            if(response.getCode().equals(200)){
+                JSONObject json =  JSONObject.parseObject(JSON.toJSONString(response.getData()));
+                Map<String,Object> data = new HashMap<>(2);
+                data.put("token",json.getString("token"));
+                data.put("expire",json.getLong("expire"));
+                return ResponseUtils.success(data);
+            }else {
+                return response;
+            }
         }else {
-            return response;
+            return ResponseUtils.error(500,"登录失败！");
         }
 
     }

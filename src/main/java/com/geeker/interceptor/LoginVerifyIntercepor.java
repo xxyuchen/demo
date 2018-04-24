@@ -100,7 +100,7 @@ public class LoginVerifyIntercepor implements HandlerInterceptor {
                         /*response.getWriter().write(JSON.toJSONString(ResponseUtils.error(500, "未查询到绑定设备！")));
                         return false;*/
                     }
-                    session.setAttribute(token,user);
+                    session.setAttribute("userSession",user);
                 }
             }catch (ExpiredJwtException e) {
                 log.error("token验证异常",e);

@@ -613,7 +613,8 @@
     CASE c.`grant_name_status` WHEN 10 THEN CONCAT('客户',c.id) ELSE c.name END AS nickName,
     c.mobile,
     c.`grant_mobile_status` AS mobileStatus,
-    c.status
+    c.status,
+    c.sex
     FROM cust c
     WHERE c.`user_id` = #{userId} AND c.mobile IS NOT NULL
     <if test="createTime != null">
