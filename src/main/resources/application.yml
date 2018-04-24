@@ -18,9 +18,9 @@ eureka:
       defaultZone: http://dc-hadoop156:5555/eureka/
 geeker:
   datasource:
-    jdbcUrl: jdbc:mysql://192.168.0.160:3306/geeker?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
-    username: geeker
-    password: HKdw!@#2017
+    jdbcUrl: jdbc:mysql://192.168.0.154:3306/geeker?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    username: shujuke
+    password: Shujuke!@#2017
     driver-class-name: com.mysql.jdbc.Driver
 micro:
   datasource:
@@ -44,7 +44,7 @@ market:
     group: http://192.168.5.3:10011/cmd/phoneBook/group
     sendSms: http://192.168.5.3:10011/cmd/phoneBook/smsSendMsg
     uploadFileUrl: http://192.168.0.152:8451/upload/file #FILE-SERVICE
-    localVoicePath: /ftp_home/geeker/voice/tempVoice/ #F:\ftp_home\geeker\voice\
+    localVoicePath: /ftp_home/geeker/voice/tempVoice/ #F:\ftp_home\geeker\voice\ #
     upLoadVocie: http://192.168.5.3:10011/cmd/phoneBook/upLoadVocie
     loginGeeker: http://192.168.0.155:8070/pc/micro/getTokenByUsername.action #http://192.168.0.155/user-apis/login.action
     reportLogin: http://192.168.5.3:10011/cmd/sys/loginGeeker
@@ -52,7 +52,6 @@ request:
   Uri:
     whiteList:
       - /register/register
-      - /register/registerw
     loginGeeker: /user/loginGeeker
     tokenKey: cr6Em1LMZEfd1okkRP1p0naBCdl2FmjE
 env: prd
