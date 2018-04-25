@@ -136,6 +136,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
         map.put("deviceId", vo.getId());
         map.put("comId", user.getCompanyId());
         map.put("userId", user.getId());
+        map.put("userLoginName",user.getLoginName());
         map.put("userName",user.getUserName());
         if (null != opDevice.getBoundUserId()) {
             //先解绑再绑定

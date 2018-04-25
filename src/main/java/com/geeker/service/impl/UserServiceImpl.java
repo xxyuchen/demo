@@ -78,10 +78,9 @@ public class UserServiceImpl implements UserService {
         map.put("comId", user.getCompanyId());
         map.put("userId", user.getId());
         CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getReportLogin(), map, CamelResponse.class);
-        log.info("登录指令上报情况：",camelResponse);
         //登录数聚客
         Map<String,Object> loginMap = new HashMap<>();
-        loginMap.put("loginName", user.getLoginName());
+        loginMap.put("username", user.getLoginName());
         /*loginMap.put("loginPwd","111111");
         loginMap.put("type",1);*/
         CamelResponse response = restTemplate.postForObject(restUrlConfig.getLoginGeeker(), loginMap, CamelResponse.class);
