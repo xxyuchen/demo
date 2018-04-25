@@ -52,7 +52,7 @@ request:
   Uri:
     whiteList:
       - /register/register
-      - /register/registerw
+      - /demo
     loginGeeker: /user/loginGeeker
     tokenKey: cr6Em1LMZEfd1okkRP1p0naBCdl2FmjE
 env: test

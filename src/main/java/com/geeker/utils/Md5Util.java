@@ -73,7 +73,7 @@ public class Md5Util {
         Long str=System.currentTimeMillis();
         Long dateTime =(new Date()).getTime();
         System.out.println(dateTime);
-        System.out.println(Md5Util.myEncrypt32("cr6Em1LMZEfd1okkRP1p0naBCdl2FmjE",dateTime+"4c116ee17d14"));
+        System.out.println(Md5Util.myEncrypt32("4c116ee17d14",dateTime+"cr6Em1LMZEfd1okkRP1p0naBCdl2FmjE"));
     }
 
 }
