@@ -134,10 +134,10 @@ public class OpDeviceServiceImpl implements OpDeviceService {
         }
         Map<String, Object> map = new HashMap<>(5);
         map.put("deviceId", vo.getId());
-        map.put("comId", user.getCompanyId());
-        map.put("userId", user.getId());
-        map.put("userLoginName", user.getLoginName());
-        map.put("userName", user.getUserName());
+        map.put("comId", dto.getCompanyId());
+        map.put("userId", LoginUserUtil.getUserId());
+        map.put("userLoginName",dto.getLoginName());
+        map.put("userName",dto.getUserName());
         if (null != opDevice.getBoundUserId()) {
             //先解绑再绑定
             CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getRemoveBound(), map, CamelResponse.class);
