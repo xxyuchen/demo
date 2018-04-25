@@ -37,5 +37,8 @@ public class UserController {
     public Response loginGeeker(String deviceId){
         return userService.loginGeeker(deviceId);
     }
-
+    @RequestMapping("/boundUser")
+    public Response boundUser(){
+        return userService.boundUser();
+    }
 }

@@ -100,4 +100,13 @@ public class UserServiceImpl implements UserService {
         }
 
     }
+
+    /**
+     * 查询已绑定用户
+     * @return
+     */
+    @Override
+    public Response boundUser() {
+        return ResponseUtils.success(opDeviceMapper.boundUser(LoginUserUtil.getUser().getCompanyId()));
+    }
 }

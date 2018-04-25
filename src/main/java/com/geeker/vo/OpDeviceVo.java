@@ -18,4 +18,6 @@ public class OpDeviceVo extends OpDevice {
     private String userName;
 
     private String departName;
+
+    private String dimQusery;
 }

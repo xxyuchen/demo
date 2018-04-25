@@ -38,5 +38,9 @@ public class OpDevice {
 
     private Integer boundUserId;
 
+    private String boundUserName;
+
+    private String boundUserLoginName;
+
     private Integer status;
 }

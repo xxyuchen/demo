@@ -23,4 +23,6 @@ public interface OpDeviceMapper {
     int removeBound(OpDevice record);
 
     OpDevice selectByBoundUserId(Integer id);
+
+    List<Integer> boundUser(Integer comId);
 }

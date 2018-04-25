@@ -13,4 +13,6 @@ public interface UserService {
     User getByLoginName(String loginName);
 
     Response loginGeeker(String deviceId);
+
+    Response boundUser();
 }

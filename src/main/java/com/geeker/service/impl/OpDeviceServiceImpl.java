@@ -79,9 +79,13 @@ public class OpDeviceServiceImpl implements OpDeviceService {
     @Override
     public Response getList(OpDeviceVo vo) {
         PageHelper.startPage(null == vo.getPageIndex()?1:vo.getPageIndex(), null == vo.getPageSize()?20:vo.getPageSize());
+        User user = LoginUserUtil.getUser();
+        vo.setComId(vo.getComId());
+        if(StringUtils.isNotEmpty(vo.getDimQusery())){
+            vo.setDimQusery("%"+vo.getDimQusery()+"%");
+        }
         List<OpDevice> list = opDeviceMapper.getList(vo);
         List<OpDeviceVo> voList = new ArrayList<>(20);
-        User user = LoginUserUtil.getUser();
         for (OpDevice opDevice : list) {
             OpDeviceVo opDeviceVo = new OpDeviceVo();
             BeanUtils.copyProperties(opDevice, opDeviceVo);
@@ -149,6 +153,8 @@ public class OpDeviceServiceImpl implements OpDeviceService {
         OpDevice device = new OpDevice();
         device.setId(vo.getId());
         device.setBoundUserId(dto.getId());
+        device.setBoundUserLoginName(dto.getLoginName());
+        device.setBoundUserName(dto.getUserName());
         device.setBoundTime(new Date());
         device.setStatus(DeviceEnum.deviceStatusEnum.BOUND.getCode());
         opDeviceMapper.updateByPrimaryKeySelective(device);

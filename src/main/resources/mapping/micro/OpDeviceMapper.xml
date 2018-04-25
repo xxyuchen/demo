@@ -233,8 +233,11 @@
       <if test="comId != null">
         and sys_id = #{sysId}
       </if>
-      <if test="comId != null">
+      <if test="groupId != null">
         and group_id = #{groupId}
+      </if>
+      <if test="dimQusery != null and dimQusery != ''">
+        (and id like #{dimQusery} or boundUserName like #{dimQusery})
       </if>
     </where>
     order by id desc
@@ -244,7 +247,9 @@
     set
     bound_time = #{boundTime,jdbcType=TIMESTAMP},
     bound_user_id = #{boundUserId,jdbcType=INTEGER},
-    status = #{status,jdbcType=TINYINT}
+    status = #{status,jdbcType=TINYINT},
+    bound_user_name = #{boundUserName},
+    bound_user_login_name = #{boundUserLoginName}
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <select id="selectByBoundUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -253,5 +258,12 @@
     from op_device
     where bound_user_id = #{id,jdbcType=VARCHAR}
     limit 1
+  </select>
+  <select id="boundUser" resultType="java.lang.Integer">
+    select distinct
+    bound_user_id
+    from op_device
+    where com_id = #{comId}
+    and bound_user_id is not null
   </select>
 </mapper>

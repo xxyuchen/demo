@@ -46,7 +46,7 @@ market:
     uploadFileUrl: http://192.168.0.152:8451/upload/file #FILE-SERVICE
     localVoicePath: /ftp_home/geeker/voice/tempVoice/ #F:\ftp_home\geeker\voice\ #
     upLoadVocie: http://192.168.5.3:10011/cmd/phoneBook/upLoadVocie
-    loginGeeker: http://192.168.0.155:8070/pc/micro/getTokenByUsername.action #http://192.168.0.155/user-apis/login.action
+    loginGeeker: http://192.168.0.155/user-apis/pc/micro/getTokenByUsername.action #http://192.168.0.155/user-apis/login.action
     reportLogin: http://192.168.5.3:10011/cmd/sys/loginGeeker
 request:
   Uri:
