@@ -151,7 +151,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectForMarket" resultType="Map">
-    select id,group_name as name,status
+    select id,group_name as name,status,reload_time as createTime
     from cust_group
     where create_user_id = #{id}
     and group_type = 1
@@ -159,6 +159,7 @@
       and DATETIME(reload_time) > DATETIME(#{synTime})
     </if>
     order by reload_time DESC
+    limit 100
   </select>
 
   <select id="selectCustForMarket" resultType="String">

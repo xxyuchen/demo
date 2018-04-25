@@ -136,8 +136,8 @@ public class OpDeviceServiceImpl implements OpDeviceService {
         map.put("deviceId", vo.getId());
         map.put("comId", user.getCompanyId());
         map.put("userId", user.getId());
-        map.put("userLoginName",user.getLoginName());
-        map.put("userName",user.getUserName());
+        map.put("userLoginName", user.getLoginName());
+        map.put("userName", user.getUserName());
         if (null != opDevice.getBoundUserId()) {
             //先解绑再绑定
             CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getRemoveBound(), map, CamelResponse.class);
@@ -231,66 +231,56 @@ public class OpDeviceServiceImpl implements OpDeviceService {
             @Override
             public void run() {
                 try {
-                    int pageNum = 1;
-                    boolean isHasNext = true;
-                    while (isHasNext) {
-                        PageHelper.startPage(pageNum, 20);
-                        List<Map> list = custMapper.selectForPhoneBook(id, synTime);
-                        if (list == null || list.size() <= 0) {
-                            log.info("无新数据，本次同步结束！");
-                            return;
+                    List<Map> list = custMapper.selectForPhoneBook(id, synTime);
+                    if (list == null || list.size() <= 0) {
+                        log.info("无新数据，本次同步结束！");
+                        return;
+                    }
+                    List<String> mobiles = new ArrayList<>();
+                    for (Map map : list) {
+                        if (null!=map.get("mobileStatus")&&map.get("mobileStatus").equals(10)) {
+                            mobiles.add(map.get("mobile").toString());
                         }
-                        List<String> mobiles = new ArrayList<>();
-                        for (Map map : list) {
-                            if (map.get("mobileStatus").equals(10)) {
-                                mobiles.add(map.get("mobile").toString());
-                            }
-                        }
-                        Map<String, String> encrypMap = new HashMap<>(20);
-                        try {
-                            encrypMap = restTemplate.postForObject(restUrlConfig.getMobileDecodeUrl(), mobiles, Map.class);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            log.error("号码解析服务异常{}", e);
-                        }
-                        List<Map<String, String>> data = new ArrayList<>(20);
-                        List<String> delMobiles = new ArrayList<>();
-                        Map<String, String> stringMap;
-                        for (Map map : list) {
-                            if (!map.get("status").equals(1)) {
-                                delMobiles.add(map.get("name").toString());
+                    }
+                    Map<String, String> encrypMap = new HashMap<>();
+                    try {
+                        encrypMap = restTemplate.postForObject(restUrlConfig.getMobileDecodeUrl(), mobiles, Map.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        log.error("号码解析服务异常{}", e);
+                    }
+                    List<Map<String, String>> data = new ArrayList<>(20);
+                    List<String> delMobiles = new ArrayList<>();
+                    Map<String, String> stringMap;
+                    for (Map map : list) {
+                        if (!map.get("status").equals(1)) {
+                            delMobiles.add(map.get("name").toString());
+                        } else {
+                            stringMap = new HashMap<>(5);
+                            if (encrypMap.containsKey(map.get("mobile"))) {
+                                stringMap.put("phone", encrypMap.get(map.get("mobile")));
                             } else {
-                                stringMap = new HashMap<>(5);
-                                if (encrypMap.containsKey(map.get("mobile"))) {
-                                    stringMap.put("phone", encrypMap.get(map.get("mobile")));
-                                } else {
-                                    stringMap.put("phone", map.get("mobile").toString());
-                                }
-                                stringMap.put("secureNumber", map.get("name").toString());
-                                stringMap.put("nickname", map.get("nickName").toString());
-                                String sex = (String) map.get("sex");
-                                if(StringUtils.isNotEmpty(sex)){
-                                    stringMap.put("sex", sex);
-                                }
-                                data.add(stringMap);
+                                stringMap.put("phone", map.get("mobile").toString());
                             }
+                            stringMap.put("secureNumber", map.get("name").toString());
+                            stringMap.put("nickname", map.get("nickName").toString());
+                            String sex = (String) map.get("sex");
+                            if (StringUtils.isNotEmpty(sex)) {
+                                stringMap.put("sex", sex);
+                            }
+                            data.add(stringMap);
                         }
-                        Map<String, Object> map = new HashMap<>(5);
-                        map.put("mobiles", data);
-                        map.put("delMobiles", delMobiles);
-                        map.put("deviceId", deviceId);
-                        map.put("comId", companyId);
-                        map.put("userId",id);
-                        CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getPhoneBook(), map, CamelResponse.class);
-                        if (camelResponse.getCode() != 200) {
-                            log.error("同步通讯录失败==>批次：{}result：{}", pageNum, camelResponse.getMessage());
-                        }
-                        PageInfo pageInfo = new PageInfo(list);
-                        isHasNext = pageInfo.isHasNextPage();
-                        if(pageNum>5){
-                            isHasNext = false;
-                        }
-                        pageNum++;
+                    }
+                    Map<String, Object> map = new HashMap<>(6);
+                    map.put("mobiles", data);
+                    map.put("delMobiles", delMobiles);
+                    map.put("deviceId", deviceId);
+                    map.put("comId", companyId);
+                    map.put("userId", id);
+                    map.put("createTime", list.get(0).get("createTime"));
+                    CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getPhoneBook(), map, CamelResponse.class);
+                    if (camelResponse.getCode() != 200) {
+                        log.error("同步通讯录失败==>result：{}", camelResponse.getMessage());
                     }
                 } catch (Exception e) {
                     log.error("同步手机通讯录异常", e);
@@ -314,50 +304,43 @@ public class OpDeviceServiceImpl implements OpDeviceService {
             @Override
             public void run() {
                 try {
-                    int pageNum = 1;
-                    boolean isHasNext = true;
-                    while (isHasNext) {
-                        PageHelper.startPage(pageNum, 20);
-                        List<Map> list = custGroupMapper.selectForMarket(id, synTime);
-                        if (null == list || list.size() <= 0) {
-                            log.info("无新数据，本次同步结束！");
-                            return;
-                        }
-                        List<Integer> delGroups = new ArrayList<>();
-                        List<Map<String, Object>> data = new ArrayList<>();
-                        Map<String, Object> groupMap;
-                        List<String> custs = new ArrayList<>();
-                        for (Map map : list) {
-                            if (!map.get("status").equals(1)) {
-                                delGroups.add((Integer) map.get("id"));
-                            } else {
-                                groupMap = new HashMap<>(3);
-                                groupMap.put("id", map.get("id"));
-                                groupMap.put("name", map.get("name"));
-                                custs = custGroupMapper.selectCustForMarket((Integer) map.get("id"));
-                                Set<String> set = new HashSet<>();
-                                for (String name : custs) {
-                                    if (StringUtils.isNotEmpty(name)) {
-                                        set.add(name);
-                                    }
+                    List<Map> list = custGroupMapper.selectForMarket(id, synTime);
+                    if (null == list || list.size() <= 0) {
+                        log.info("无新数据，本次同步结束！");
+                        return;
+                    }
+                    List<Integer> delGroups = new ArrayList<>();
+                    List<Map<String, Object>> data = new ArrayList<>();
+                    Map<String, Object> groupMap;
+                    List<String> custs = new ArrayList<>();
+                    for (Map map : list) {
+                        if (!map.get("status").equals(1)) {
+                            delGroups.add((Integer) map.get("id"));
+                        } else {
+                            groupMap = new HashMap<>(3);
+                            groupMap.put("id", map.get("id"));
+                            groupMap.put("name", map.get("name"));
+                            custs = custGroupMapper.selectCustForMarket((Integer) map.get("id"));
+                            Set<String> set = new HashSet<>();
+                            for (String name : custs) {
+                                if (StringUtils.isNotEmpty(name)) {
+                                    set.add(name);
                                 }
-                                groupMap.put("custs", set);
-                                data.add(groupMap);
                             }
+                            groupMap.put("custs", set);
+                            data.add(groupMap);
                         }
-                        Map<String, Object> map = new HashMap<>(5);
-                        map.put("groups", data);
-                        map.put("delGroups", delGroups);
-                        map.put("deviceId", deviceId);
-                        map.put("comId", companyId);
-                        map.put("userId",id);
-                        CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getGroup(), map, CamelResponse.class);
-                        if (camelResponse.getCode() != 200) {
-                            log.error("同步群组失败==>批次：{}result：{}", pageNum, camelResponse.getMessage());
-                        }
-                        PageInfo pageInfo = new PageInfo(list);
-                        isHasNext = pageInfo.isHasNextPage();
-                        pageNum++;
+                    }
+                    Map<String, Object> map = new HashMap<>(6);
+                    map.put("groups", data);
+                    map.put("delGroups", delGroups);
+                    map.put("deviceId", deviceId);
+                    map.put("comId", companyId);
+                    map.put("userId", id);
+                    map.put("createTime", list.get(0).get("createTime"));
+                    CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getGroup(), map, CamelResponse.class);
+                    if (camelResponse.getCode() != 200) {
+                        log.error("同步群组失败==>result：{}", camelResponse.getMessage());
                     }
                 } catch (Exception e) {
                     log.error("同步群组异常", e);
