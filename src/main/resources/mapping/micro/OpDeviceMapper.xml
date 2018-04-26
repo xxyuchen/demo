@@ -196,6 +196,12 @@
       <if test="boundUserId != null">
         bound_user_id = #{boundUserId,jdbcType=INTEGER},
       </if>
+      <if test="boundUserName != null">
+        bound_user_name = #{boundUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="boundUserLoginName != null">
+        bound_user_login_name = #{boundUserLoginName,jdbcType=VARCHAR},
+      </if>
       <if test="status != null">
         status = #{status,jdbcType=TINYINT},
       </if>
