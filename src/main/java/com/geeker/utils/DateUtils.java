@@ -110,4 +110,11 @@ public class DateUtils {
         int day = (int) min;
         return day;
     }
+
+    public static Date getDateByLong(Long date){
+        if(null==date){
+            return null;
+        }
+        return new Date(date);
+    }
 }

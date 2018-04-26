@@ -20,7 +20,7 @@ public interface CustGroupMapper {
 
     int updateByPrimaryKey(CustGroup record);
 
-    List<Map> selectForMarket(@Param("id") Integer id, @Param("synTime")Date synTime);
+    List<Map> selectForMarket(@Param("id") Integer id, @Param("synTime")Date synTime,@Param("comId") Integer comId);
 
     List<String> selectCustForMarket(Integer id);
 }

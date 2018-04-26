@@ -20,6 +20,7 @@ import com.geeker.vo.OpDeviceVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.FileSystemResource;
@@ -231,7 +232,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
             @Override
             public void run() {
                 try {
-                    List<Map> list = custMapper.selectForPhoneBook(id, synTime);
+                    List<Map> list = custMapper.selectForPhoneBook(id, synTime,companyId);
                     if (list == null || list.size() <= 0) {
                         log.info("无新数据，本次同步结束！");
                         return;
@@ -254,16 +255,16 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                     Map<String, String> stringMap;
                     for (Map map : list) {
                         if (!map.get("status").equals(1)) {
-                            delMobiles.add(map.get("name").toString());
+                            delMobiles.add(MapUtils.getString(map,"name"));
                         } else {
                             stringMap = new HashMap<>(5);
                             if (encrypMap.containsKey(map.get("mobile"))) {
                                 stringMap.put("phone", encrypMap.get(map.get("mobile")));
                             } else {
-                                stringMap.put("phone", map.get("mobile").toString());
+                                stringMap.put("phone", MapUtils.getString(map,"mobile"));
                             }
-                            stringMap.put("secureNumber", map.get("name").toString());
-                            stringMap.put("nickname", map.get("nickName").toString());
+                            stringMap.put("secureNumber", MapUtils.getString(map,"name"));
+                            stringMap.put("nickname", MapUtils.getString(map,"nickName"));
                             String sex = (String) map.get("sex");
                             if (StringUtils.isNotEmpty(sex)) {
                                 stringMap.put("sex", sex);
@@ -277,7 +278,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                     map.put("deviceId", deviceId);
                     map.put("comId", companyId);
                     map.put("userId", id);
-                    map.put("createTime", list.get(0).get("createTime"));
+                    map.put("createTime", list.get(list.size()-1).get("createTime"));
                     CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getPhoneBook(), map, CamelResponse.class);
                     if (camelResponse.getCode() != 200) {
                         log.error("同步通讯录失败==>result：{}", camelResponse.getMessage());
@@ -304,7 +305,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
             @Override
             public void run() {
                 try {
-                    List<Map> list = custGroupMapper.selectForMarket(id, synTime);
+                    List<Map> list = custGroupMapper.selectForMarket(id, synTime,companyId);
                     if (null == list || list.size() <= 0) {
                         log.info("无新数据，本次同步结束！");
                         return;
@@ -337,7 +338,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                     map.put("deviceId", deviceId);
                     map.put("comId", companyId);
                     map.put("userId", id);
-                    map.put("createTime", list.get(0).get("createTime"));
+                    map.put("createTime", list.get(list.size()-1).get("createTime"));
                     CamelResponse camelResponse = restTemplate.postForObject(restUrlConfig.getGroup(), map, CamelResponse.class);
                     if (camelResponse.getCode() != 200) {
                         log.error("同步群组失败==>result：{}", camelResponse.getMessage());

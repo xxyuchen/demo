@@ -615,13 +615,13 @@
     c.`grant_mobile_status` AS mobileStatus,
     c.status,
     c.sex,
-    c.create_time as createTime
+    CASE WHEN c.update_time IS NULL THEN c.create_time ELSE c.update_time END AS createTime
     FROM cust c
-    WHERE c.`user_id` = #{userId} AND c.mobile IS NOT NULL
+    WHERE c.`user_id` = #{userId} AND c.mobile IS NOT NULL and c.com_id = #{comId}
     <if test="createTime != null">
-      and DATETIME(c.create_time) > DATETIME(#{createTime})
+      and IF(c.update_time IS NULL,c.create_time>#{createTime},c.update_time>#{createTime})
     </if>
-    ORDER BY c.create_time DESC
+    ORDER BY createTime ASC
     limit 100
   </select>
   <select id="selectById" resultType="String">

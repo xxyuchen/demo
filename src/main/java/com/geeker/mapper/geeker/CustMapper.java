@@ -20,7 +20,7 @@ public interface CustMapper {
 
     int updateByPrimaryKey(Cust record);
 
-    List<Map> selectForPhoneBook(@Param("userId")Integer userId, @Param("createTime")Date createTime);
+    List<Map> selectForPhoneBook(@Param("userId")Integer userId, @Param("createTime")Date createTime, @Param("comId")Integer comId);
 
     String selectById(@Param("userId")Integer userId, @Param("id")Integer id);
 }

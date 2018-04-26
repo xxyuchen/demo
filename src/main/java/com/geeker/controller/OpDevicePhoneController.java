@@ -4,6 +4,7 @@ import com.geeker.model.User;
 import com.geeker.response.Response;
 import com.geeker.response.ResponseUtils;
 import com.geeker.service.OpDeviceService;
+import com.geeker.utils.DateUtils;
 import com.geeker.utils.LoginUserUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,9 +37,9 @@ public class OpDevicePhoneController {
      * @return
      */
     @RequestMapping("/phoneBook")
-    public Response phoneBook(Date synTime) throws Exception {
+    public Response phoneBook(Long synTime) throws Exception {
         User user = LoginUserUtil.getUser();
-        opDeviceService.phoneBook(synTime,user.getId(),user.getDeviceId(),user.getCompanyId());
+        opDeviceService.phoneBook(DateUtils.getDateByLong(synTime),user.getId(),user.getDeviceId(),user.getCompanyId());
         return ResponseUtils.success();
     }
     /**
@@ -47,9 +48,9 @@ public class OpDevicePhoneController {
      * @return
      */
     @RequestMapping("/group")
-    public Response group(Date synTime) throws Exception {
+    public Response group(Long synTime) throws Exception {
         User user = LoginUserUtil.getUser();
-        opDeviceService.group(synTime,user.getId(),user.getDeviceId(),user.getCompanyId());
+        opDeviceService.group(DateUtils.getDateByLong(synTime),user.getId(),user.getDeviceId(),user.getCompanyId());
         return ResponseUtils.success();
     }
     /**

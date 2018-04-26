@@ -151,14 +151,15 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectForMarket" resultType="Map">
-    select id,group_name as name,status,reload_time as createTime
+    select id,group_name as name,status,
+    CASE WHEN reload_time IS NULL THEN create_time ELSE reload_time END AS createTime
     from cust_group
     where create_user_id = #{id}
-    and group_type = 1
+    and group_type = 1 and com_id = #{comId}
     <if test="synTime != null">
-      and DATETIME(reload_time) > DATETIME(#{synTime})
+      and IF(reload_time IS NULL,create_time>#{synTime},reload_time>#{synTime})
     </if>
-    order by reload_time DESC
+    order by createTime ASC
     limit 100
   </select>
 
