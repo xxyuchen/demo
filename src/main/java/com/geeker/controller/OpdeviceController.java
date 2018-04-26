@@ -1,5 +1,6 @@
 package com.geeker.controller;
 
+import com.geeker.annotation.Submit;
 import com.geeker.response.Response;
 import com.geeker.service.OpDeviceService;
 import com.geeker.vo.OpDeviceVo;
@@ -35,6 +36,7 @@ public class OpdeviceController {
      * @return
      */
     @RequestMapping("/boundDevice")
+    @Submit
     public Response boundDevice(OpDeviceVo vo) throws Exception {
         return opDeviceService.boundDevice(vo);
     }
@@ -44,6 +46,7 @@ public class OpdeviceController {
      * @return
      */
     @RequestMapping("/removeBound")
+    @Submit
     public Response removeBound(String deviceId) throws Exception {
         return opDeviceService.removeBound(deviceId);
     }

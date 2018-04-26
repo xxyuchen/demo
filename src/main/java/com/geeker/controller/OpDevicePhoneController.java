@@ -1,5 +1,6 @@
 package com.geeker.controller;
 
+import com.geeker.annotation.Submit;
 import com.geeker.model.User;
 import com.geeker.response.Response;
 import com.geeker.response.ResponseUtils;
@@ -58,6 +59,7 @@ public class OpDevicePhoneController {
      * @return
      */
     @RequestMapping("/sendSms")
+    @Submit
     public Response sendSms(Integer custId,String parm) throws Exception {
         return opDeviceService.sendSms(custId,parm);
     }

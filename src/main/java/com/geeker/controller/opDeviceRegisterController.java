@@ -1,5 +1,6 @@
 package com.geeker.controller;
 
+import com.geeker.annotation.Submit;
 import com.geeker.response.Response;
 import com.geeker.service.OpDeviceRegisterService;
 import com.geeker.vo.OpDeviceRegisterVo;
@@ -25,6 +26,7 @@ public class opDeviceRegisterController {
      * @throws Exception
      */
     @RequestMapping("/getCodes")
+    @Submit
     public Response getRegisterCodes(Integer num) throws Exception {
         return opDeviceRegisterService.getRegisterCodes(num);
     }

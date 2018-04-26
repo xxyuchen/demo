@@ -56,15 +56,11 @@ public class LoginVerifyIntercepor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String path = request.getRequestURI();
-        String token;
+
         if(requestUriConfig.getWhiteList().contains(path)){
             return true;
         }
-        token = request.getHeader("token");
-        if(StringUtils.isEmpty(token)){
-            Map<String, String> cookieMap = CookieUtil.getCookies(request);
-            token = cookieMap.get("token");
-        }
+        String token = CookieUtil.getToken(request);
         response.setContentType("application/json;charset=UTF-8");
         HttpSession session = request.getSession();
         log.info("token:【{}】",token);

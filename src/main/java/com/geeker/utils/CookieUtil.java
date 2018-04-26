@@ -7,6 +7,8 @@
 //with the terms of the license agreement you entered into with hzhanghang.com, Inc.
 package com.geeker.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,5 +80,18 @@ public class CookieUtil {
 		response.addCookie(cookie);
 	}
 
+	/**
+	 * 获取token
+	 * @param request
+	 * @return
+	 */
+	public static String getToken(HttpServletRequest request){
+		String token = request.getHeader("token");
+		if(StringUtils.isEmpty(token)){
+			Map<String, String> cookieMap = getCookies(request);
+			token = cookieMap.get("token");
+		}
+		return token;
+	}
 
 }
