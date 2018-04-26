@@ -14,6 +14,7 @@ import com.geeker.response.CamelResponse;
 import com.geeker.response.Response;
 import com.geeker.response.ResponseUtils;
 import com.geeker.service.OpDeviceService;
+import com.geeker.utils.DateUtils;
 import com.geeker.utils.LoginUserUtil;
 import com.geeker.utils.SecureNumberUtil;
 import com.geeker.vo.OpDeviceVo;
@@ -232,6 +233,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
             @Override
             public void run() {
                 try {
+                    log.info("同步通讯录：登录用户【{}】,时间【{}】",id, DateUtils.dateToString(synTime,"yyyy-MM-dd HH:mm:ss"));
                     List<Map> list = custMapper.selectForPhoneBook(id, synTime,companyId);
                     if (list == null || list.size() <= 0) {
                         log.info("无新数据，本次同步结束！");
@@ -265,10 +267,8 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                             }
                             stringMap.put("secureNumber", MapUtils.getString(map,"name"));
                             stringMap.put("nickname", MapUtils.getString(map,"nickName"));
-                            String sex = (String) map.get("sex");
-                            if (StringUtils.isNotEmpty(sex)) {
-                                stringMap.put("sex", sex);
-                            }
+
+                            stringMap.put("sex", MapUtils.getString(map,"sex"));
                             data.add(stringMap);
                         }
                     }
@@ -305,6 +305,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
             @Override
             public void run() {
                 try {
+                    log.info("同步群组：登录用户【{}】,时间【{}】",id, DateUtils.dateToString(synTime,"yyyy-MM-dd HH:mm:ss"));
                     List<Map> list = custGroupMapper.selectForMarket(id, synTime,companyId);
                     if (null == list || list.size() <= 0) {
                         log.info("无新数据，本次同步结束！");
