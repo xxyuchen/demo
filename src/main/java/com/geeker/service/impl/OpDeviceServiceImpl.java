@@ -252,9 +252,9 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                         e.printStackTrace();
                         log.error("号码解析服务异常{}", e);
                     }
-                    List<Map<String, String>> data = new ArrayList<>(20);
+                    List<Map<String, Object>> data = new ArrayList<>(20);
                     List<String> delMobiles = new ArrayList<>();
-                    Map<String, String> stringMap;
+                    Map<String, Object> stringMap;
                     for (Map map : list) {
                         if (!map.get("status").equals(1)) {
                             delMobiles.add(MapUtils.getString(map,"name"));
@@ -269,6 +269,9 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                             stringMap.put("nickname", MapUtils.getString(map,"nickName"));
 
                             stringMap.put("sex", MapUtils.getString(map,"sex"));
+                            //关联群组
+                            List<Integer> groupIds = custGroupMapper.selectByCustId(MapUtils.getInteger(map,"id"));
+                            stringMap.put("groupIds",groupIds);
                             data.add(stringMap);
                         }
                     }

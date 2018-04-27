@@ -23,4 +23,6 @@ public interface CustGroupMapper {
     List<Map> selectForMarket(@Param("id") Integer id, @Param("synTime")Date synTime,@Param("comId") Integer comId);
 
     List<String> selectCustForMarket(Integer id);
+
+    List<Integer> selectByCustId(Integer custId);
 }

@@ -168,4 +168,8 @@
     from cust_group_rel r left join cust c on r.cust_id = c.id
     where r.cust_group_id = #{id}
   </select>
+
+  <select id="selectByCustId" resultType="java.lang.Integer">
+    select DISTINCT cust_group_id as custGroupId from cust_group_rel where cust_id = #{custId}
+  </select>
 </mapper>
