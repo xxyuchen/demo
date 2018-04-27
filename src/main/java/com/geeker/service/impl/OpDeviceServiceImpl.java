@@ -93,9 +93,9 @@ public class OpDeviceServiceImpl implements OpDeviceService {
             BeanUtils.copyProperties(opDevice, opDeviceVo);
             if (null != opDevice.getBoundUserId()) {
                 //关联出用户及部门
-                Map<String, String> map = userMapper.selectByUserId(user.getId(), user.getCompanyId());
-                opDeviceVo.setUserName(map.get("userName"));
-                opDeviceVo.setDepartName(map.get("departName"));
+                Map<String, String> map = userMapper.selectByUserId(opDevice.getBoundUserId(), user.getCompanyId());
+                opDeviceVo.setUserName(MapUtils.getString(map,"userName"));
+                opDeviceVo.setDepartName(MapUtils.getString(map,"departName"));
             }
             voList.add(opDeviceVo);
         }
