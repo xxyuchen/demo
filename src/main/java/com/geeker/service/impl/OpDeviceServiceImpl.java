@@ -86,6 +86,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
         if(StringUtils.isNotEmpty(vo.getDimQusery())){
             vo.setDimQusery("%"+vo.getDimQusery()+"%");
         }
+        vo.setComId(user.getCompanyId());
         List<OpDevice> list = opDeviceMapper.getList(vo);
         List<OpDeviceVo> voList = new ArrayList<>(20);
         for (OpDevice opDevice : list) {
@@ -271,6 +272,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                             stringMap.put("sex", MapUtils.getString(map,"sex"));
                             //关联群组
                             List<Integer> groupIds = custGroupMapper.selectByCustId(MapUtils.getInteger(map,"id"));
+                            log.info("客户所在群组：【{}】",groupIds);
                             stringMap.put("groupIds",groupIds);
                             data.add(stringMap);
                         }
