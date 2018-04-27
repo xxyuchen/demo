@@ -236,7 +236,7 @@
       <if test="comId != null">
         and com_id = #{comId}
       </if>
-      <if test="comId != null">
+      <if test="sysId != null">
         and sys_id = #{sysId}
       </if>
       <if test="groupId != null">
