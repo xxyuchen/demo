@@ -1,6 +1,5 @@
 package com.geeker.service.impl;
 
-import com.geeker.enums.DeviceEnum;
 import com.geeker.mapper.micro.OpDeviceMapper;
 import com.geeker.mapper.micro.OpDeviceRegisterMapper;
 import com.geeker.model.OpDevice;

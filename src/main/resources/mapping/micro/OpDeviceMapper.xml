@@ -250,7 +250,7 @@
         and (id like #{dimQusery} or bound_user_name like #{dimQusery})
       </if>
     </where>
-    order by id desc
+    order by id ASC
   </select>
   <update id="removeBound" parameterType="com.geeker.model.OpDevice">
     update op_device
