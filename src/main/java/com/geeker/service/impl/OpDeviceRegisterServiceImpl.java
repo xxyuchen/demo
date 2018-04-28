@@ -1,5 +1,6 @@
 package com.geeker.service.impl;
 
+import com.geeker.enums.DeviceEnum;
 import com.geeker.mapper.micro.OpDeviceMapper;
 import com.geeker.mapper.micro.OpDeviceRegisterMapper;
 import com.geeker.model.OpDevice;
@@ -99,6 +100,7 @@ public class OpDeviceRegisterServiceImpl implements OpDeviceRegisterService {
             BeanUtils.copyProperties(vo, opDevice);
             opDevice.setComId(deviceRegister.getComId());
             opDevice.setCreateTime(new Date());
+            opDevice.setStatus(0);
             opDeviceMapper.insert(opDevice);
         } catch (Exception e) {
             log.info("设备注册失败！", e);
