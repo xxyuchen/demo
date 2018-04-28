@@ -170,6 +170,8 @@
   </select>
 
   <select id="selectByCustId" resultType="java.lang.Integer">
-    select DISTINCT cust_group_id as custGroupId from cust_group_rel where cust_id = #{custId}
+    select DISTINCT cust_group_id as custGroupId from cust_group_rel r
+    LEFT JOIN cust_group g ON r.`cust_group_id`=g.`id`
+    where r.cust_id = #{custId} and g.group_type = 1
   </select>
 </mapper>
