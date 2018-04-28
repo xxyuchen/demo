@@ -18,6 +18,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="bound_time" jdbcType="TIMESTAMP" property="boundTime" />
     <result column="bound_user_id" jdbcType="INTEGER" property="boundUserId" />
+    <result column="bound_user_name" jdbcType="VARCHAR" property="boundUserName" />
     <result column="status" jdbcType="TINYINT" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -246,7 +247,7 @@
         and status = #{status}
       </if>
       <if test="dimQusery != null and dimQusery != ''">
-        and (id like #{dimQusery} or boundUserName like #{dimQusery})
+        and (id like #{dimQusery} or bound_user_name like #{dimQusery})
       </if>
     </where>
     order by id desc
