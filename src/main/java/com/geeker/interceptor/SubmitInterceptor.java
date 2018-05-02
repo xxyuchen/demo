@@ -16,9 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 
 /**
@@ -31,7 +29,7 @@ public class SubmitInterceptor implements HandlerInterceptor {
     /**
      * 请求重复的标记，key是用户标识和url，value是标记
      */
-    private Map<String, Boolean> duplicateRecordMap = new HashMap<>();
+    private Map<String, Boolean> duplicateRecordMap = new ConcurrentHashMap<>();
 
     private ScheduledExecutorService scheduledExecutorService =
             new ScheduledThreadPoolExecutor(100, r -> {
