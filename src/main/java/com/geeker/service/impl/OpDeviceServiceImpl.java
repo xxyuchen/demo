@@ -263,7 +263,7 @@ public class OpDeviceServiceImpl implements OpDeviceService {
                             stringMap = new HashMap<>(5);
                             if (encrypMap.containsKey(map.get("mobile"))) {
                                 log.info("号码解析----密文：【{}】，解密后：【{}】",map.get("mobile"),MapUtils.getString(encrypMap, map.get("mobile")));
-                                stringMap.put("phone", null == MapUtils.getString(encrypMap, map.get("mobile")) ? map.get("mobile") : MapUtils.getString(encrypMap, map.get("mobile")));
+                                stringMap.put("phone", StringUtils.isEmpty(MapUtils.getString(encrypMap, map.get("mobile"))) ? map.get("mobile") : MapUtils.getString(encrypMap, map.get("mobile")));
                             } else {
                                 stringMap.put("phone", MapUtils.getString(map, "mobile"));
                             }
